@@ -5,11 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cybersecurity Module</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific styles for the new cyber activities */
+        .meter-container {
+            width: 100%;
+            height: 20px;
+            background-color: #010409;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        #password-meter {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-red);
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .fake-login {
+            background-color: #010409;
+            border: 1px dashed #30363d;
+            padding: 2rem;
+            border-radius: 4px;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #sql-result {
+            margin-top: 1rem;
+            font-weight: bold;
+            min-height: 24px;
+        }
+    </style>
 </head>
 <body>
 
-    <nav>
+    <nav style="flex-wrap: wrap;">
         <a href="index.html">[HOME]</a>
+        <a href="about.html">[ABOUT CVN]</a>
+        <a href="careers.html">[CAREERS]</a>
         <a href="cyber.html" style="color: var(--accent-green);">[CYBERSECURITY]</a>
         <a href="network.html">[NETWORKING]</a>
         <a href="virt.html">[VIRTUALIZATION]</a>
@@ -17,26 +54,63 @@
 
     <header>
         <h1>Module 1: Cybersecurity</h1>
-        <p>In collegiate competitions like CCDC (Collegiate Cyber Defense Competition), securing data in transit is the difference between winning and getting breached.</p>
+        <p>In competitions like CCDC, securing the perimeter is only half the battle. You have to understand how attackers think, how they break cryptography, and how they exploit bad code.</p>
     </header>
 
     <div class="container">
+        
         <div class="card">
-            <h2>Cryptography: The Caesar Cipher</h2>
-            <p>Before modern AES encryption, we had rotational ciphers. If an attacker intercepts your network traffic, encryption ensures all they see is garbage data. <strong>Your Challenge:</strong> An allied team sent you a distress signal, but it's encrypted. Slide the key to find the readable message.</p>
+            <h2>1. Cryptography: The Caesar Cipher</h2>
+            <p>If an attacker intercepts your network traffic, encryption ensures all they see is garbage data. <strong>Your Challenge:</strong> An allied CCDC team sent you a distress signal, but it's encrypted. Slide the key to find the readable message.</p>
             
             <label for="cipher-input">Intercepted Network Packet:</label>
-            <textarea id="cipher-input" rows="3">Zobmywo dy Dro Ohzybdc Dokuwyeb!</textarea>
+            <textarea id="cipher-input" rows="2">Zobmywo dy Dro Ohzybdc Dokuwyeb!</textarea>
             
             <label for="shift-slider">Decryption Key (Shift Value): <span id="shift-value" style="color: var(--accent-green); font-weight: bold;">0</span></label>
             <input type="range" id="shift-slider" min="0" max="25" value="0">
             
             <label for="cipher-output">Decrypted Output:</label>
-            <textarea id="cipher-output" rows="3" readonly></textarea>
+            <textarea id="cipher-output" rows="2" readonly></textarea>
         </div>
+
+        <div class="card">
+            <h2>2. Password Auditing: Brute Force</h2>
+            <p>Hackers don't usually guess passwords; they use automated tools that can try millions of combinations per second. <strong>Your Challenge:</strong> Type a password below to see how long it would take a standard cracking rig to break it.</p>
+            
+            <input type="text" id="password-input" placeholder="Enter a test password..." oninput="checkPasswordStrength()">
+            
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                <span>Estimated Time to Crack:</span>
+                <span id="crack-time" style="font-family: 'Fira Code', monospace; font-weight: bold; color: var(--accent-red);">Instantly</span>
+            </div>
+            
+            <div class="meter-container">
+                <div id="password-meter"></div>
+            </div>
+            <p style="font-size: 0.8rem; color: #8b949e; margin-top: 10px;">Pro Tip: Try adding a symbol, a number, or just making it really long (like a phrase).</p>
+        </div>
+
+        <div class="card">
+            <h2>3. Web Exploitation: SQL Injection</h2>
+            <p>Sometimes the vulnerability isn't the password, but the website itself. Poorly written code can allow attackers to inject database commands directly into a login box. <strong>Your Challenge:</strong> Bypass this administrative login without knowing the password. Try entering this exact string as the username: <code style="color: var(--accent-green);">' OR 1=1 --</code></p>
+            
+            <div class="fake-login">
+                <h3 style="margin-top: 0;">Admin Portal</h3>
+                <input type="text" id="sql-user" placeholder="Username">
+                <input type="password" id="sql-pass" placeholder="Password (Optional)">
+                <button class="btn-primary" onclick="attemptSQLi()" style="width: 100%;">Login</button>
+                <div id="sql-result"></div>
+            </div>
+        </div>
+
     </div>
 
+    <footer>
+        <p>Created for the high school visit | Alexandria Technical and Community College</p>
+    </footer>
+
     <script>
+        // --- 1. CIPHER LOGIC ---
         const cipherInput = document.getElementById('cipher-input');
         const cipherOutput = document.getElementById('cipher-output');
         const shiftSlider = document.getElementById('shift-slider');
@@ -69,6 +143,77 @@
         });
         cipherInput.addEventListener('input', applyCipher);
         applyCipher();
+
+        // --- 2. PASSWORD CRACKER LOGIC ---
+        function checkPasswordStrength() {
+            const pwd = document.getElementById('password-input').value;
+            const meter = document.getElementById('password-meter');
+            const timeText = document.getElementById('crack-time');
+            
+            if (pwd.length === 0) {
+                meter.style.width = '0%';
+                timeText.innerText = "Instantly";
+                timeText.style.color = "var(--accent-red)";
+                return;
+            }
+
+            // Simplified entropy calculation for simulation purposes
+            let pool = 0;
+            if (/[a-z]/.test(pwd)) pool += 26;
+            if (/[A-Z]/.test(pwd)) pool += 26;
+            if (/[0-9]/.test(pwd)) pool += 10;
+            if (/[^A-Za-z0-9]/.test(pwd)) pool += 32;
+
+            const entropy = pwd.length * Math.log2(pool || 1);
+            
+            let timeEstimate = "";
+            let color = "";
+            let width = 0;
+
+            if (entropy < 28) {
+                timeEstimate = "Instantly";
+                color = "var(--accent-red)";
+                width = 25;
+            } else if (entropy < 35) {
+                timeEstimate = "A few minutes";
+                color = "#d29922"; // Yellow
+                width = 50;
+            } else if (entropy < 59) {
+                timeEstimate = "A few days";
+                color = "#d29922";
+                width = 75;
+            } else if (entropy < 70) {
+                timeEstimate = "Years";
+                color = "var(--accent-green)";
+                width = 90;
+            } else {
+                timeEstimate = "Centuries";
+                color = "var(--accent-blue)";
+                width = 100;
+            }
+
+            meter.style.width = width + '%';
+            meter.style.backgroundColor = color;
+            timeText.innerText = timeEstimate;
+            timeText.style.color = color;
+        }
+
+        // --- 3. SQL INJECTION LOGIC ---
+        function attemptSQLi() {
+            const user = document.getElementById('sql-user').value.trim();
+            const result = document.getElementById('sql-result');
+
+            // Checking for standard basic SQLi payload
+            if (user === "' OR 1=1 --" || user === "' OR '1'='1") {
+                result.style.color = "var(--accent-green)";
+                result.innerText = "ACCESS GRANTED. Database authentication bypassed!";
+            } else if (user === "") {
+                result.innerText = "";
+            } else {
+                result.style.color = "var(--accent-red)";
+                result.innerText = "ACCESS DENIED. Invalid credentials.";
+            }
+        }
     </script>
 </body>
 </html>
