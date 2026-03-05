@@ -5,7 +5,8 @@ import { MissionsPage } from './pages/MissionsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PacketPathPage } from './pages/PacketPathPage';
 import { PathwaysPage } from './pages/PathwaysPage';
-import { SandboxComingSoonPage } from './pages/SandboxComingSoonPage';
+import { PythonMissionPage } from './pages/PythonMissionPage';
+import { SandboxMissionPage } from './pages/SandboxMissionPage';
 import { SnifferPage } from './pages/SnifferPage';
 import { VisitPage } from './pages/VisitPage';
 import { ProgressProvider } from './state/progress-context';
@@ -20,7 +21,8 @@ export default function App() {
             <Route path="missions" element={<MissionsPage />} />
             <Route path="missions/packet-path" element={<PacketPathPage />} />
             <Route path="missions/password-pulse" element={<SnifferPage />} />
-            <Route path="missions/sandbox-reset" element={<SandboxComingSoonPage />} />
+            <Route path="missions/sandbox-reset" element={<SandboxMissionPage />} />
+            <Route path="missions/python-fix" element={<PythonMissionPage />} />
             <Route path="pathways" element={<PathwaysPage />} />
             <Route path="visit" element={<VisitPage />} />
             <Route path="home" element={<Navigate to="/" replace />} />

@@ -17,7 +17,8 @@ export function createDefaultMissionStats(): MissionStats {
   return {
     'packet-path': defaultMissionStat(),
     'password-pulse': defaultMissionStat(),
-    'sandbox-reset': defaultMissionStat()
+    'sandbox-reset': defaultMissionStat(),
+    'python-fix': defaultMissionStat()
   };
 }
 

@@ -9,7 +9,7 @@ Interactive web app for high school seniors exploring cybersecurity, networking,
 
 ## Current Build Status
 - Phase 1 complete: app shell, routing, progress store, Pages deployment workflow.
-- Phase 2 started: two playable missions live (`Packet Path Rush`, `Live Sniffer Hunt`).
+- Phase 2 active: four playable missions live (`Packet Path Rush`, `Live Sniffer Hunt`, `Sandbox Save`, `Python Fix Lab`).
 - Gamified loop live: unlock path, retries, hints, score awards, and badges.
 
 ## Local Development

@@ -34,7 +34,19 @@ export const missions: MissionDefinition[] = [
     durationMinutes: 5,
     route: '/missions/sandbox-reset',
     unlockRequires: ['packet-path', 'password-pulse'],
-    isLive: false
+    isLive: true
+  },
+  {
+    id: 'python-fix',
+    title: 'Python Fix Lab',
+    domain: 'Automation',
+    difficulty: 'Intermediate',
+    objective: 'Debug a defense script so the firewall deploys under attack.',
+    rewardPoints: 180,
+    durationMinutes: 4,
+    route: '/missions/python-fix',
+    unlockRequires: ['sandbox-reset'],
+    isLive: true
   }
 ];
 

@@ -42,3 +42,27 @@ export function snifferBadge(attemptsAfterSubmit: number, hintsUsed: number): st
   }
   return 'Blue Team Closer';
 }
+
+export function sandboxBadge(
+  attemptsAfterSubmit: number,
+  hintsUsed: number,
+  threatLevelAtValidation: number
+): string {
+  if (attemptsAfterSubmit === 1 && hintsUsed === 0 && threatLevelAtValidation <= 35) {
+    return 'Containment Commander';
+  }
+  if (hintsUsed <= 1) {
+    return 'Snapshot Specialist';
+  }
+  return 'Recovery Operator';
+}
+
+export function pythonBadge(attemptsAfterSubmit: number, hintsUsed: number): string {
+  if (attemptsAfterSubmit === 1 && hintsUsed === 0) {
+    return 'Syntax Sniper';
+  }
+  if (hintsUsed <= 1) {
+    return 'Bug Buster';
+  }
+  return 'Code Defender';
+}
