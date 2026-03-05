@@ -71,7 +71,7 @@
             border: 1px solid #30363d;
             border-top: none;
             border-radius: 0 0 4px 4px;
-            height: 250px;
+            height: 300px;
             overflow-y: hidden; 
             padding: 0.5rem;
             font-family: 'Fira Code', monospace;
@@ -82,6 +82,7 @@
         .packet-line { margin: 2px 0; border-bottom: 1px solid #161b22; padding-bottom: 2px; }
         .pkt-encrypted { color: #8b949e; }
         .pkt-cleartext { color: var(--accent-red); font-weight: bold; background-color: rgba(248, 81, 73, 0.1); }
+        .pkt-stealth { color: #8b949e; } /* Blends in perfectly with encrypted traffic */
         
         .controls { display: flex; gap: 1rem; align-items: center; }
         .flag-input { flex-grow: 1; margin-bottom: 0 !important; }
@@ -143,7 +144,7 @@
 
         <div class="card">
             <h2>3. Network Tap: Live Capture Gauntlet</h2>
-            <p>You are a Blue Team analyst monitoring raw network traffic. You need to catch users logging in over unencrypted protocols. Pause the traffic, locate the plaintext password, and submit it below to advance.</p>
+            <p>You are a Blue Team analyst. You need to catch careless users logging in over unencrypted protocols. Pause the traffic, locate the plaintext password, and submit it below to advance. <strong>Warning: Visual assistance (red highlights) disables after Level 5.</strong></p>
             
             <div class="ctf-header">
                 <span id="level-title" style="color: var(--accent-green);">LEVEL 1: FTP INTERCEPT</span>
@@ -171,9 +172,10 @@
     </footer>
 
     <script>
-        // --- 1. SHA-256 HASHING ---
+        // --- 1. EXACT SHA-256 HASHING ---
         async function calculateHash() {
-            const input = document.getElementById('hash-input').value.trim();
+            // Trim removed to ensure exact matches with CyberChef raw string input
+            const input = document.getElementById('hash-input').value;
             const msgBuffer = new TextEncoder().encode(input);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -217,7 +219,7 @@
             else { timeVal.innerText = "Centuries+"; timeVal.style.color = "var(--accent-blue)"; }
         });
 
-        // --- 3. CTF PACKET SNIFFER GAUNTLET ---
+        // --- 3. CTF 10-LEVEL PACKET SNIFFER GAUNTLET ---
         const snifferScreen = document.getElementById('sniffer-screen');
         const btnToggle = document.getElementById('btn-toggle-sniff');
         const resultDisplay = document.getElementById('flag-result');
@@ -230,47 +232,23 @@
         let currentLevel = 0;
         let score = 0;
 
-        const fakeIPs = ["192.168.1.104", "10.0.0.52", "172.16.254.1", "192.168.1.200"];
-        const destIPs = ["104.21.44.11", "142.250.190.46", "52.94.236.1", "13.107.42.14"];
+        const fakeIPs = ["192.168.1.104", "10.0.0.52", "172.16.254.1", "192.168.1.200", "10.10.10.5"];
+        const destIPs = ["104.21.44.11", "142.250.190.46", "52.94.236.1", "13.107.42.14", "198.51.100.2"];
         const protocols = ["TCP", "UDP", "TLSv1.3", "QUIC"];
 
         const levels = [
-            {
-                name: "LEVEL 1: FTP INTERCEPT",
-                desc: "Target is logging into an old file server. Look for Port 21. Traffic is moving slowly.",
-                proto: "FTP", port: 21,
-                flag: "skol_vikings",
-                format: "USER: admin PASS: {flag}",
-                speed: 400, // ms per packet (slow)
-                targetChance: 0.10
-            },
-            {
-                name: "LEVEL 2: TELNET SNOOPING",
-                desc: "Traffic is speeding up. A network engineer is configuring a router over Telnet. Look for Port 23.",
-                proto: "Telnet", port: 23,
-                flag: "alex_tech_esports",
-                format: "login: root password: {flag}",
-                speed: 150, // ms per packet (faster)
-                targetChance: 0.05
-            },
-            {
-                name: "LEVEL 3: HTTP FORM CAPTURE",
-                desc: "Heavy traffic. A user is submitting a web form without HTTPS. Look for a POST request on Port 80.",
-                proto: "HTTP", port: 80,
-                flag: "ccdc_champion",
-                format: "POST /api/login | payload={\"user\":\"admin\",\"pass\":\"{flag}\"}",
-                speed: 60, // ms per packet (very fast)
-                targetChance: 0.03
-            },
-            {
-                name: "LEVEL 4: LEGACY PROTOCOL",
-                desc: "Extreme speed! Finding the needle in the haystack. Legacy authentication detected on Port 70.",
-                proto: "Gopher", port: 70,
-                flag: "dr_gopher9",
-                format: "GET /auth/verify | credentials={flag}",
-                speed: 25, // ms per packet (blur)
-                targetChance: 0.015
-            }
+            { name: "LEVEL 1: FTP INTERCEPT", desc: "Target is logging into an old file server. Look for Port 21. Traffic is moving slowly.", proto: "FTP", port: 21, flag: "minnewaska_lakers", format: "USER: admin PASS: {flag}", speed: 450, chance: 0.15 },
+            { name: "LEVEL 2: TELNET SNOOPING", desc: "Traffic is speeding up. A network engineer is configuring a router over Telnet. Look for Port 23.", proto: "Telnet", port: 23, flag: "atcc_legends", format: "login: root password: {flag}", speed: 300, chance: 0.10 },
+            { name: "LEVEL 3: HTTP FORM CAPTURE", desc: "A user is submitting a web form without HTTPS. Look for a POST request on Port 80.", proto: "HTTP", port: 80, flag: "root_access_granted", format: "POST /login | payload={\"user\":\"admin\",\"pass\":\"{flag}\"}", speed: 200, chance: 0.08 },
+            { name: "LEVEL 4: POP3 MAIL", desc: "Intercepting unencrypted email server authentication. Look for Port 110.", proto: "POP3", port: 110, flag: "ccdc_defenders", format: "USER admin PASS {flag}", speed: 120, chance: 0.06 },
+            { name: "LEVEL 5: IMAP AUTH", desc: "Heavy traffic. Target is syncing an old mail client on Port 143.", proto: "IMAP", port: 143, flag: "alexandria_tech_2026", format: "LOGIN user {flag}", speed: 80, chance: 0.05 },
+            
+            // --- STEALTH LEVELS ---
+            { name: "LEVEL 6: STEALTH FTP", desc: "WARNING: Visual Assistance Disabled. Packets will no longer highlight in red. Find the FTP login on Port 21.", proto: "FTP", port: 21, flag: "zero_day_exploit", format: "USER: sysadmin PASS: {flag}", speed: 60, chance: 0.04 },
+            { name: "LEVEL 7: STEALTH HTTP", desc: "Deep packet inspection required. Look for the unencrypted HTTP GET request.", proto: "HTTP", port: 80, flag: "lakers_cyber_club", format: "GET /auth?pwd={flag} HTTP/1.1", speed: 45, chance: 0.03 },
+            { name: "LEVEL 8: STEALTH TELNET", desc: "Traffic is extremely dense. Find the legacy Telnet session on Port 23.", proto: "Telnet", port: 23, flag: "packet_injection", format: "Password: {flag}", speed: 30, chance: 0.02 },
+            { name: "LEVEL 9: STEALTH SMTP", desc: "Server-to-server email auth. Look for SMTP Port 25.", proto: "SMTP", port: 25, flag: "pwned_the_network", format: "AUTH LOGIN {flag}", speed: 20, chance: 0.015 },
+            { name: "LEVEL 10: THE GAUNTLET", desc: "Maximum speed. True needle in a haystack. Unsecured API endpoint on Port 8080.", proto: "HTTP", port: 8080, flag: "atcc_esports_champs", format: "Authorization: Basic {flag}", speed: 10, chance: 0.01 }
         ];
 
         function generatePacket() {
@@ -284,16 +262,18 @@
             
             let pktHTML = "";
 
-            if (Math.random() < lvl.targetChance) {
+            if (Math.random() < lvl.chance) {
                 const payload = lvl.format.replace("{flag}", lvl.flag);
-                pktHTML = `<div class="packet-line pkt-cleartext">[${lvl.proto}] ${src}:54321 -> 10.0.0.99:${lvl.port} | ${payload}</div>`;
+                // If level is 0-4 (Levels 1-5), show red text. If 5-9 (Levels 6-10), use stealth class.
+                const styleClass = (currentLevel < 5) ? "pkt-cleartext" : "pkt-stealth";
+                pktHTML = `<div class="packet-line ${styleClass}">[${lvl.proto}] ${src}:54321 -> 10.0.0.99:${lvl.port} | ${payload}</div>`;
             } else {
                 pktHTML = `<div class="packet-line pkt-encrypted">[${proto}] ${src} -> ${dst}:443 | Len: ${len} | Payload: Encrypted Data...</div>`;
             }
 
             snifferScreen.innerHTML += pktHTML;
             
-            if (snifferScreen.childElementCount > 60) {
+            if (snifferScreen.childElementCount > 75) {
                 snifferScreen.removeChild(snifferScreen.firstChild);
             }
             snifferScreen.scrollTop = snifferScreen.scrollHeight;
@@ -317,7 +297,14 @@
         function startLevel() {
             const lvl = levels[currentLevel];
             document.getElementById('level-title').innerText = lvl.name;
-            document.getElementById('mission-desc').innerText = lvl.desc;
+            
+            // Visual warning when reaching stealth levels
+            if (currentLevel === 5) {
+                document.getElementById('mission-desc').innerHTML = `<span style="color: var(--accent-red); font-weight: bold;">[SYSTEM ALERT] Red highlighting disabled.</span> ${lvl.desc}`;
+            } else {
+                document.getElementById('mission-desc').innerText = lvl.desc;
+            }
+            
             snifferScreen.innerHTML = "";
             resultDisplay.innerText = "";
             flagInput.value = "";
@@ -339,11 +326,11 @@
             const lvl = levels[currentLevel];
             
             if (flag === lvl.flag) {
-                score += 100;
+                score += (currentLevel < 5) ? 100 : 250; // Bonus points for stealth levels
                 document.getElementById('score-display').innerText = `SCORE: ${score}`;
                 resultDisplay.style.color = "var(--accent-green)";
                 
-                toggleTraffic(true); // Auto pause on win
+                toggleTraffic(true); 
                 flagInput.disabled = true;
                 verifyBtn.style.display = "none";
 
@@ -351,7 +338,7 @@
                     resultDisplay.innerText = "SUCCESS: Credentials intercepted! Proceeding to next phase...";
                     nextBtn.style.display = "inline-block";
                 } else {
-                    resultDisplay.innerText = "GAUNTLET COMPLETE: You have secured the network!";
+                    resultDisplay.innerText = "GAUNTLET COMPLETE: You have secured the network! Master Hacker Status Achieved.";
                 }
             } else if (flag === "") {
                 resultDisplay.innerText = "";
