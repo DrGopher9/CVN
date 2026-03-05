@@ -44,17 +44,39 @@
             color: var(--accent-blue);
         }
 
-        /* Sniffer Styles */
+        /* CTF Sniffer Styles */
+        .ctf-header {
+            display: flex;
+            justify-content: space-between;
+            background-color: #21262d;
+            padding: 0.5rem 1rem;
+            border: 1px solid #30363d;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            font-family: 'Fira Code', monospace;
+            font-weight: bold;
+        }
+
+        .mission-brief {
+            background-color: #161b22;
+            padding: 1rem;
+            border-left: 1px solid #30363d;
+            border-right: 1px solid #30363d;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
         .sniffer-terminal {
             background-color: #010409;
             border: 1px solid #30363d;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
             height: 250px;
-            overflow-y: hidden; /* Auto-scrolls via JS */
+            overflow-y: hidden; 
             padding: 0.5rem;
             font-family: 'Fira Code', monospace;
             font-size: 0.85rem;
             margin-bottom: 1rem;
-            position: relative;
         }
         
         .packet-line { margin: 2px 0; border-bottom: 1px solid #161b22; padding-bottom: 2px; }
@@ -63,6 +85,9 @@
         
         .controls { display: flex; gap: 1rem; align-items: center; }
         .flag-input { flex-grow: 1; margin-bottom: 0 !important; }
+        
+        #next-level-btn { display: none; background-color: var(--accent-blue); }
+        #next-level-btn:hover { background-color: #3178c6; }
     </style>
 </head>
 <body>
@@ -85,7 +110,7 @@
         
         <div class="card">
             <h2>1. Cryptographic Hashing (SHA-256)</h2>
-            <p>This is a live, browser-native SHA-256 generator. <strong>Challenge:</strong> Type a word, then change exactly one letter. Watch the "Avalanche Effect" completely scramble the 64-character signature. <em>(Note: Input is trimmed of invisible spaces for accurate CyberChef verification).</em></p>
+            <p>This is a live, browser-native SHA-256 generator. <strong>Challenge:</strong> Type a word, then change exactly one letter. Watch the "Avalanche Effect" completely scramble the 64-character signature.</p>
             
             <input type="text" id="hash-input" placeholder="Type data to hash..." autocomplete="off">
             <div class="terminal-box">
@@ -96,7 +121,7 @@
 
         <div class="card">
             <h2>2. Password Entropy & Cracking Rig</h2>
-            <p>How strong is your password against a modern GPU cluster pushing <strong>100 Billion NTLM hashes per second</strong>? This calculates the raw mathematical entropy (Bits = Length × Log₂(Pool Size)).</p>
+            <p>How strong is your password against a modern GPU cluster pushing <strong>100 Billion NTLM hashes per second</strong>? This calculates the raw mathematical entropy.</p>
             
             <input type="text" id="pwd-input" placeholder="Test a password..." autocomplete="off">
             
@@ -117,16 +142,24 @@
         </div>
 
         <div class="card">
-            <h2>3. Network Tap: Live Packet Sniffing</h2>
-            <p>When you connect to public Wi-Fi without encryption, you broadcast your data to everyone. <strong>Challenge:</strong> You are monitoring raw network traffic. Most data is encrypted (HTTPS/443). Watch for a careless user logging in over unencrypted FTP (Port 21). Freeze the traffic, find the plaintext password, and submit it below.</p>
+            <h2>3. Network Tap: Live Capture Gauntlet</h2>
+            <p>You are a Blue Team analyst monitoring raw network traffic. You need to catch users logging in over unencrypted protocols. Pause the traffic, locate the plaintext password, and submit it below to advance.</p>
             
-            <div class="sniffer-terminal" id="sniffer-screen">
-                </div>
+            <div class="ctf-header">
+                <span id="level-title" style="color: var(--accent-green);">LEVEL 1: FTP INTERCEPT</span>
+                <span id="score-display" style="color: var(--accent-blue);">SCORE: 0</span>
+            </div>
+            <div class="mission-brief" id="mission-desc">
+                Target is logging into an old file server. Look for Port 21. Traffic is moving slowly.
+            </div>
+            
+            <div class="sniffer-terminal" id="sniffer-screen"></div>
 
             <div class="controls">
                 <button id="btn-toggle-sniff" class="btn-primary" style="background-color: var(--accent-red);">[ PAUSE TRAFFIC ]</button>
                 <input type="text" id="flag-input" class="flag-input" placeholder="Enter intercepted password..." autocomplete="off">
-                <button onclick="checkFlag()" class="btn-primary">Verify</button>
+                <button onclick="checkFlag()" class="btn-primary" id="btn-verify">Verify</button>
+                <button onclick="nextLevel()" class="btn-primary" id="next-level-btn">Next Level >></button>
             </div>
             <div id="flag-result" style="margin-top: 10px; font-weight: bold; font-family: 'Fira Code', monospace;"></div>
         </div>
@@ -138,9 +171,8 @@
     </footer>
 
     <script>
-        // --- 1. SHA-256 HASHING (STRICT) ---
+        // --- 1. SHA-256 HASHING ---
         async function calculateHash() {
-            // Trim whitespace to ensure it matches standard CyberChef string inputs perfectly
             const input = document.getElementById('hash-input').value.trim();
             const msgBuffer = new TextEncoder().encode(input);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -150,7 +182,7 @@
         }
         document.getElementById('hash-input').addEventListener('input', calculateHash);
 
-        // --- 2. LEGIT PASSWORD ENTROPY MATH ---
+        // --- 2. PASSWORD ENTROPY MATH ---
         document.getElementById('pwd-input').addEventListener('input', function() {
             const pwd = this.value;
             const poolVal = document.getElementById('pool-val');
@@ -158,14 +190,11 @@
             const timeVal = document.getElementById('time-val');
             
             if (!pwd) {
-                poolVal.innerText = "0";
-                entVal.innerText = "0";
-                timeVal.innerText = "Instantly";
-                timeVal.style.color = "var(--accent-red)";
+                poolVal.innerText = "0"; entVal.innerText = "0";
+                timeVal.innerText = "Instantly"; timeVal.style.color = "var(--accent-red)";
                 return;
             }
 
-            // Calculate exact pool size
             let pool = 0;
             if (/[a-z]/.test(pwd)) pool += 26;
             if (/[A-Z]/.test(pwd)) pool += 26;
@@ -173,14 +202,11 @@
             if (/[^a-zA-Z0-9]/.test(pwd)) pool += 32;
 
             poolVal.innerText = pool;
-
-            // Entropy formula: L * log2(R)
             const entropy = pwd.length * Math.log2(pool || 1);
             entVal.innerText = entropy.toFixed(1);
 
-            // Crack time at 100 Billion (10^11) guesses per second
             const combinations = Math.pow(2, entropy);
-            const seconds = (combinations / 2) / 100000000000; // Divided by 2 for average crack time
+            const seconds = (combinations / 2) / 100000000000; 
 
             if (seconds < 1) { timeVal.innerText = "Instantly"; timeVal.style.color = "var(--accent-red)"; }
             else if (seconds < 60) { timeVal.innerText = Math.round(seconds) + " Seconds"; timeVal.style.color = "var(--accent-red)"; }
@@ -191,22 +217,66 @@
             else { timeVal.innerText = "Centuries+"; timeVal.style.color = "var(--accent-blue)"; }
         });
 
-        // --- 3. NETWORK PACKET SNIFFER ---
+        // --- 3. CTF PACKET SNIFFER GAUNTLET ---
         const snifferScreen = document.getElementById('sniffer-screen');
         const btnToggle = document.getElementById('btn-toggle-sniff');
+        const resultDisplay = document.getElementById('flag-result');
+        const nextBtn = document.getElementById('next-level-btn');
+        const verifyBtn = document.getElementById('btn-verify');
+        const flagInput = document.getElementById('flag-input');
+        
         let isSniffing = true;
         let sniffInterval;
+        let currentLevel = 0;
+        let score = 0;
 
         const fakeIPs = ["192.168.1.104", "10.0.0.52", "172.16.254.1", "192.168.1.200"];
         const destIPs = ["104.21.44.11", "142.250.190.46", "52.94.236.1", "13.107.42.14"];
         const protocols = ["TCP", "UDP", "TLSv1.3", "QUIC"];
 
-        // The hidden flag they need to catch
-        const targetPassword = "wolverine2026";
+        const levels = [
+            {
+                name: "LEVEL 1: FTP INTERCEPT",
+                desc: "Target is logging into an old file server. Look for Port 21. Traffic is moving slowly.",
+                proto: "FTP", port: 21,
+                flag: "skol_vikings",
+                format: "USER: admin PASS: {flag}",
+                speed: 400, // ms per packet (slow)
+                targetChance: 0.10
+            },
+            {
+                name: "LEVEL 2: TELNET SNOOPING",
+                desc: "Traffic is speeding up. A network engineer is configuring a router over Telnet. Look for Port 23.",
+                proto: "Telnet", port: 23,
+                flag: "alex_tech_esports",
+                format: "login: root password: {flag}",
+                speed: 150, // ms per packet (faster)
+                targetChance: 0.05
+            },
+            {
+                name: "LEVEL 3: HTTP FORM CAPTURE",
+                desc: "Heavy traffic. A user is submitting a web form without HTTPS. Look for a POST request on Port 80.",
+                proto: "HTTP", port: 80,
+                flag: "ccdc_champion",
+                format: "POST /api/login | payload={\"user\":\"admin\",\"pass\":\"{flag}\"}",
+                speed: 60, // ms per packet (very fast)
+                targetChance: 0.03
+            },
+            {
+                name: "LEVEL 4: LEGACY PROTOCOL",
+                desc: "Extreme speed! Finding the needle in the haystack. Legacy authentication detected on Port 70.",
+                proto: "Gopher", port: 70,
+                flag: "dr_gopher9",
+                format: "GET /auth/verify | credentials={flag}",
+                speed: 25, // ms per packet (blur)
+                targetChance: 0.015
+            }
+        ];
 
         function generatePacket() {
             if (!isSniffing) return;
 
+            const lvl = levels[currentLevel];
             const src = fakeIPs[Math.floor(Math.random() * fakeIPs.length)];
             const dst = destIPs[Math.floor(Math.random() * destIPs.length)];
             const proto = protocols[Math.floor(Math.random() * protocols.length)];
@@ -214,29 +284,25 @@
             
             let pktHTML = "";
 
-            // 5% chance to drop the unencrypted FTP packet
-            if (Math.random() < 0.05) {
-                pktHTML = `<div class="packet-line pkt-cleartext">[FTP] ${src}:54321 -> 10.0.0.99:21 | USER: admin PASS: ${targetPassword}</div>`;
+            if (Math.random() < lvl.targetChance) {
+                const payload = lvl.format.replace("{flag}", lvl.flag);
+                pktHTML = `<div class="packet-line pkt-cleartext">[${lvl.proto}] ${src}:54321 -> 10.0.0.99:${lvl.port} | ${payload}</div>`;
             } else {
                 pktHTML = `<div class="packet-line pkt-encrypted">[${proto}] ${src} -> ${dst}:443 | Len: ${len} | Payload: Encrypted Data...</div>`;
             }
 
             snifferScreen.innerHTML += pktHTML;
             
-            // Keep terminal from getting too huge
-            if (snifferScreen.childElementCount > 50) {
+            if (snifferScreen.childElementCount > 60) {
                 snifferScreen.removeChild(snifferScreen.firstChild);
             }
-            
-            // Auto scroll to bottom
             snifferScreen.scrollTop = snifferScreen.scrollHeight;
         }
 
-        // Start sniffing
-        sniffInterval = setInterval(generatePacket, 250); // Generates 4 packets a second
+        function toggleTraffic(forcePause = false) {
+            if (forcePause) isSniffing = false;
+            else isSniffing = !isSniffing;
 
-        btnToggle.addEventListener('click', () => {
-            isSniffing = !isSniffing;
             if (isSniffing) {
                 btnToggle.innerText = "[ PAUSE TRAFFIC ]";
                 btnToggle.style.backgroundColor = "var(--accent-red)";
@@ -244,22 +310,64 @@
                 btnToggle.innerText = "[ RESUME TRAFFIC ]";
                 btnToggle.style.backgroundColor = "var(--accent-green)";
             }
-        });
+        }
+
+        btnToggle.addEventListener('click', () => toggleTraffic(false));
+
+        function startLevel() {
+            const lvl = levels[currentLevel];
+            document.getElementById('level-title').innerText = lvl.name;
+            document.getElementById('mission-desc').innerText = lvl.desc;
+            snifferScreen.innerHTML = "";
+            resultDisplay.innerText = "";
+            flagInput.value = "";
+            
+            verifyBtn.style.display = "inline-block";
+            nextBtn.style.display = "none";
+            flagInput.disabled = false;
+            
+            isSniffing = true;
+            btnToggle.innerText = "[ PAUSE TRAFFIC ]";
+            btnToggle.style.backgroundColor = "var(--accent-red)";
+            
+            if (sniffInterval) clearInterval(sniffInterval);
+            sniffInterval = setInterval(generatePacket, lvl.speed);
+        }
 
         function checkFlag() {
-            const flag = document.getElementById('flag-input').value.trim();
-            const result = document.getElementById('flag-result');
+            const flag = flagInput.value.trim();
+            const lvl = levels[currentLevel];
             
-            if (flag === targetPassword) {
-                result.style.color = "var(--accent-green)";
-                result.innerText = "SUCCESS: Plaintext credentials intercepted!";
+            if (flag === lvl.flag) {
+                score += 100;
+                document.getElementById('score-display').innerText = `SCORE: ${score}`;
+                resultDisplay.style.color = "var(--accent-green)";
+                
+                toggleTraffic(true); // Auto pause on win
+                flagInput.disabled = true;
+                verifyBtn.style.display = "none";
+
+                if (currentLevel < levels.length - 1) {
+                    resultDisplay.innerText = "SUCCESS: Credentials intercepted! Proceeding to next phase...";
+                    nextBtn.style.display = "inline-block";
+                } else {
+                    resultDisplay.innerText = "GAUNTLET COMPLETE: You have secured the network!";
+                }
             } else if (flag === "") {
-                result.innerText = "";
+                resultDisplay.innerText = "";
             } else {
-                result.style.color = "var(--accent-red)";
-                result.innerText = "ERROR: Incorrect credentials. Keep analyzing traffic.";
+                resultDisplay.style.color = "var(--accent-red)";
+                resultDisplay.innerText = "ERROR: Incorrect credentials. Keep analyzing traffic.";
             }
         }
+
+        function nextLevel() {
+            currentLevel++;
+            startLevel();
+        }
+
+        // Initialize first level
+        startLevel();
     </script>
 </body>
 </html>
