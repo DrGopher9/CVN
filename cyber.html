@@ -20,11 +20,12 @@
             word-break: break-all;
             font-size: 1.1rem;
             letter-spacing: 1px;
+            user-select: all;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             margin-top: 1rem;
         }
@@ -34,41 +35,34 @@
             padding: 1rem;
             border: 1px dashed #30363d;
             border-radius: 4px;
+            text-align: center;
         }
 
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: var(--accent-blue);
         }
 
-        .sql-query-preview {
-            color: #8b949e;
-            background: #000;
-            padding: 1rem;
-            border-left: 4px solid var(--accent-blue);
-            margin-bottom: 1rem;
-        }
-
-        .sql-keyword { color: #ff7b72; }
-        .sql-string { color: #a5d6ff; }
-
-        .data-dump {
-            display: none;
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .data-dump th, .data-dump td {
+        /* Sniffer Styles */
+        .sniffer-terminal {
+            background-color: #010409;
             border: 1px solid #30363d;
-            padding: 8px;
-            text-align: left;
+            height: 250px;
+            overflow-y: hidden; /* Auto-scrolls via JS */
+            padding: 0.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            position: relative;
         }
-
-        .data-dump th { background-color: #21262d; color: var(--accent-green); }
-        .warning-text { color: var(--accent-red); font-size: 0.85rem; font-weight: bold; }
+        
+        .packet-line { margin: 2px 0; border-bottom: 1px solid #161b22; padding-bottom: 2px; }
+        .pkt-encrypted { color: #8b949e; }
+        .pkt-cleartext { color: var(--accent-red); font-weight: bold; background-color: rgba(248, 81, 73, 0.1); }
+        
+        .controls { display: flex; gap: 1rem; align-items: center; }
+        .flag-input { flex-grow: 1; margin-bottom: 0 !important; }
     </style>
 </head>
 <body>
@@ -84,69 +78,57 @@
 
     <header>
         <h1>Module 1: Offensive & Defensive Cyber</h1>
-        <p>Securing the perimeter means understanding the attack vectors. Get hands-on with live encryption, entropy analysis, and database exploitation.</p>
+        <p>Securing the perimeter means understanding the attack vectors. Get hands-on with live cryptography, entropy math, and packet sniffing.</p>
     </header>
 
     <div class="container">
         
         <div class="card">
-            <h2>1. The Hash Avalanche (SHA-256)</h2>
-            <p>Modern passwords aren't saved as text; they are "hashed." A cryptographic hash is a one-way mathematical function. <strong>Challenge:</strong> Type a word below. Note the output. Then, change just ONE letter and watch how the entire 64-character signature radically transforms.</p>
+            <h2>1. Cryptographic Hashing (SHA-256)</h2>
+            <p>This is a live, browser-native SHA-256 generator. <strong>Challenge:</strong> Type a word, then change exactly one letter. Watch the "Avalanche Effect" completely scramble the 64-character signature. <em>(Note: Input is trimmed of invisible spaces for accurate CyberChef verification).</em></p>
             
             <input type="text" id="hash-input" placeholder="Type data to hash..." autocomplete="off">
             <div class="terminal-box">
-                <div style="color: #8b949e; font-size: 0.8rem; margin-bottom: 5px;">SHA-256 OUTPUT:</div>
+                <div style="color: #8b949e; font-size: 0.8rem; margin-bottom: 5px;">SHA-256 CHECKSUM:</div>
                 <div id="hash-output" class="hash-output">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</div>
             </div>
         </div>
 
         <div class="card">
-            <h2>2. Offline Cracking Rig Simulator</h2>
-            <p>Attackers use massive GPU clusters to crack hashes offline. Assuming a rig pushing <strong>100 Billion guesses per second</strong>, how strong is your password? This tool calculates raw informational entropy.</p>
+            <h2>2. Password Entropy & Cracking Rig</h2>
+            <p>How strong is your password against a modern GPU cluster pushing <strong>100 Billion NTLM hashes per second</strong>? This calculates the raw mathematical entropy (Bits = Length × Log₂(Pool Size)).</p>
             
             <input type="text" id="pwd-input" placeholder="Test a password..." autocomplete="off">
             
-            <div id="pwd-warnings" class="warning-text"></div>
-
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div style="font-size: 0.8rem; color: #8b949e;">ENTROPY (BITS)</div>
+                    <div style="font-size: 0.7rem; color: #8b949e;">CHARACTER POOL</div>
+                    <div id="pool-val" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 0.7rem; color: #8b949e;">ENTROPY (BITS)</div>
                     <div id="entropy-val" class="stat-value">0</div>
                 </div>
                 <div class="stat-card">
-                    <div style="font-size: 0.8rem; color: #8b949e;">EST. CRACK TIME</div>
+                    <div style="font-size: 0.7rem; color: #8b949e;">EST. CRACK TIME</div>
                     <div id="time-val" class="stat-value" style="color: var(--accent-red);">Instantly</div>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <h2>3. Blind SQL Injection</h2>
-            <p>If a website doesn't sanitize your input, you can write database commands directly into the login box. <strong>Challenge:</strong> Look at the live SQL query below. How can you trick the database into evaluating the password check as <code>TRUE</code> without knowing it? <em>Hint: Try ending your username with <code>' OR '1'='1</code></em></p>
+            <h2>3. Network Tap: Live Packet Sniffing</h2>
+            <p>When you connect to public Wi-Fi without encryption, you broadcast your data to everyone. <strong>Challenge:</strong> You are monitoring raw network traffic. Most data is encrypted (HTTPS/443). Watch for a careless user logging in over unencrypted FTP (Port 21). Freeze the traffic, find the plaintext password, and submit it below.</p>
             
-            <div class="sql-query-preview" id="sql-query">
-                <span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> users <span class="sql-keyword">WHERE</span> username = <span class="sql-string">''</span> <span class="sql-keyword">AND</span> password = <span class="sql-string">''</span>
+            <div class="sniffer-terminal" id="sniffer-screen">
+                </div>
+
+            <div class="controls">
+                <button id="btn-toggle-sniff" class="btn-primary" style="background-color: var(--accent-red);">[ PAUSE TRAFFIC ]</button>
+                <input type="text" id="flag-input" class="flag-input" placeholder="Enter intercepted password..." autocomplete="off">
+                <button onclick="checkFlag()" class="btn-primary">Verify</button>
             </div>
-
-            <input type="text" id="sql-user" placeholder="Username" autocomplete="off">
-            <input type="password" id="sql-pass" placeholder="Password (Optional)" autocomplete="off">
-            <button class="btn-primary" onclick="executeSQL()" style="width: 100%;">Execute Query</button>
-
-            <table class="data-dump" id="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Credit Card</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>01</td><td>admin_root</td><td>SuperAdmin</td><td>4111-XXXX-XXXX-1111</td></tr>
-                    <tr><td>02</td><td>j.smith</td><td>User</td><td>4532-XXXX-XXXX-9921</td></tr>
-                    <tr><td>03</td><td>ceo_account</td><td>Admin</td><td>5500-XXXX-XXXX-8832</td></tr>
-                </tbody>
-            </table>
+            <div id="flag-result" style="margin-top: 10px; font-weight: bold; font-family: 'Fira Code', monospace;"></div>
         </div>
 
     </div>
@@ -156,9 +138,10 @@
     </footer>
 
     <script>
-        // --- 1. SHA-256 HASHING ---
+        // --- 1. SHA-256 HASHING (STRICT) ---
         async function calculateHash() {
-            const input = document.getElementById('hash-input').value;
+            // Trim whitespace to ensure it matches standard CyberChef string inputs perfectly
+            const input = document.getElementById('hash-input').value.trim();
             const msgBuffer = new TextEncoder().encode(input);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -167,43 +150,37 @@
         }
         document.getElementById('hash-input').addEventListener('input', calculateHash);
 
-        // --- 2. ADVANCED PASSWORD ENTROPY ---
+        // --- 2. LEGIT PASSWORD ENTROPY MATH ---
         document.getElementById('pwd-input').addEventListener('input', function() {
             const pwd = this.value;
+            const poolVal = document.getElementById('pool-val');
             const entVal = document.getElementById('entropy-val');
             const timeVal = document.getElementById('time-val');
-            const warnings = document.getElementById('pwd-warnings');
             
-            warnings.innerHTML = "";
-
             if (!pwd) {
+                poolVal.innerText = "0";
                 entVal.innerText = "0";
                 timeVal.innerText = "Instantly";
                 timeVal.style.color = "var(--accent-red)";
                 return;
             }
 
+            // Calculate exact pool size
             let pool = 0;
             if (/[a-z]/.test(pwd)) pool += 26;
             if (/[A-Z]/.test(pwd)) pool += 26;
             if (/[0-9]/.test(pwd)) pool += 10;
-            if (/[^A-Za-z0-9]/.test(pwd)) pool += 32;
+            if (/[^a-zA-Z0-9]/.test(pwd)) pool += 32;
 
-            let entropy = pwd.length * Math.log2(pool || 1);
-            
-            // Penalties for real-world bad habits
-            const lowerPwd = pwd.toLowerCase();
-            if (lowerPwd.includes("password") || lowerPwd.includes("1234") || lowerPwd.includes("qwerty") || lowerPwd === "admin") {
-                entropy -= 20;
-                warnings.innerHTML = "⚠ VULNERABILITY DETECTED: Dictionary word or common sequence found in password.";
-            }
+            poolVal.innerText = pool;
 
-            if (entropy < 0) entropy = 0;
-            entVal.innerText = Math.round(entropy);
+            // Entropy formula: L * log2(R)
+            const entropy = pwd.length * Math.log2(pool || 1);
+            entVal.innerText = entropy.toFixed(1);
 
-            // Time math: (2^(entropy - 1)) / 100,000,000,000 guesses per second
-            const guessesNeeded = Math.pow(2, entropy - 1);
-            const seconds = guessesNeeded / 100000000000;
+            // Crack time at 100 Billion (10^11) guesses per second
+            const combinations = Math.pow(2, entropy);
+            const seconds = (combinations / 2) / 100000000000; // Divided by 2 for average crack time
 
             if (seconds < 1) { timeVal.innerText = "Instantly"; timeVal.style.color = "var(--accent-red)"; }
             else if (seconds < 60) { timeVal.innerText = Math.round(seconds) + " Seconds"; timeVal.style.color = "var(--accent-red)"; }
@@ -214,31 +191,73 @@
             else { timeVal.innerText = "Centuries+"; timeVal.style.color = "var(--accent-blue)"; }
         });
 
-        // --- 3. LIVE SQL INJECTION ---
-        const sqlUser = document.getElementById('sql-user');
-        const sqlPass = document.getElementById('sql-pass');
-        const queryDisplay = document.getElementById('sql-query');
-        const dataTable = document.getElementById('data-table');
+        // --- 3. NETWORK PACKET SNIFFER ---
+        const snifferScreen = document.getElementById('sniffer-screen');
+        const btnToggle = document.getElementById('btn-toggle-sniff');
+        let isSniffing = true;
+        let sniffInterval;
 
-        function updateQueryPreview() {
-            const u = sqlUser.value;
-            const p = sqlPass.value;
-            queryDisplay.innerHTML = `<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> users <span class="sql-keyword">WHERE</span> username = <span class="sql-string">'${u}'</span> <span class="sql-keyword">AND</span> password = <span class="sql-string">'${p}'</span>`;
+        const fakeIPs = ["192.168.1.104", "10.0.0.52", "172.16.254.1", "192.168.1.200"];
+        const destIPs = ["104.21.44.11", "142.250.190.46", "52.94.236.1", "13.107.42.14"];
+        const protocols = ["TCP", "UDP", "TLSv1.3", "QUIC"];
+
+        // The hidden flag they need to catch
+        const targetPassword = "wolverine2026";
+
+        function generatePacket() {
+            if (!isSniffing) return;
+
+            const src = fakeIPs[Math.floor(Math.random() * fakeIPs.length)];
+            const dst = destIPs[Math.floor(Math.random() * destIPs.length)];
+            const proto = protocols[Math.floor(Math.random() * protocols.length)];
+            const len = Math.floor(Math.random() * 1400) + 64;
+            
+            let pktHTML = "";
+
+            // 5% chance to drop the unencrypted FTP packet
+            if (Math.random() < 0.05) {
+                pktHTML = `<div class="packet-line pkt-cleartext">[FTP] ${src}:54321 -> 10.0.0.99:21 | USER: admin PASS: ${targetPassword}</div>`;
+            } else {
+                pktHTML = `<div class="packet-line pkt-encrypted">[${proto}] ${src} -> ${dst}:443 | Len: ${len} | Payload: Encrypted Data...</div>`;
+            }
+
+            snifferScreen.innerHTML += pktHTML;
+            
+            // Keep terminal from getting too huge
+            if (snifferScreen.childElementCount > 50) {
+                snifferScreen.removeChild(snifferScreen.firstChild);
+            }
+            
+            // Auto scroll to bottom
+            snifferScreen.scrollTop = snifferScreen.scrollHeight;
         }
 
-        sqlUser.addEventListener('input', updateQueryPreview);
-        sqlPass.addEventListener('input', updateQueryPreview);
+        // Start sniffing
+        sniffInterval = setInterval(generatePacket, 250); // Generates 4 packets a second
 
-        function executeSQL() {
-            const u = sqlUser.value;
-            // Common logical bypasses
-            if (u.includes("' OR '1'='1") || u.includes("' OR 1=1") || u.includes("admin' --") || u.includes("' OR ''='")) {
-                queryDisplay.style.borderLeft = "4px solid var(--accent-green)";
-                dataTable.style.display = "table";
+        btnToggle.addEventListener('click', () => {
+            isSniffing = !isSniffing;
+            if (isSniffing) {
+                btnToggle.innerText = "[ PAUSE TRAFFIC ]";
+                btnToggle.style.backgroundColor = "var(--accent-red)";
             } else {
-                queryDisplay.style.borderLeft = "4px solid var(--accent-red)";
-                dataTable.style.display = "none";
-                alert("ACCESS DENIED: Database returned 0 rows.");
+                btnToggle.innerText = "[ RESUME TRAFFIC ]";
+                btnToggle.style.backgroundColor = "var(--accent-green)";
+            }
+        });
+
+        function checkFlag() {
+            const flag = document.getElementById('flag-input').value.trim();
+            const result = document.getElementById('flag-result');
+            
+            if (flag === targetPassword) {
+                result.style.color = "var(--accent-green)";
+                result.innerText = "SUCCESS: Plaintext credentials intercepted!";
+            } else if (flag === "") {
+                result.innerText = "";
+            } else {
+                result.style.color = "var(--accent-red)";
+                result.innerText = "ERROR: Incorrect credentials. Keep analyzing traffic.";
             }
         }
     </script>
