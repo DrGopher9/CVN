@@ -172,18 +172,34 @@
     </footer>
 
     <script>
-        // --- 1. EXACT SHA-256 HASHING ---
+       // --- 1. EXACT SHA-256 HASHING ---
         async function calculateHash() {
-            // Trim removed to ensure exact matches with CyberChef raw string input
             const input = document.getElementById('hash-input').value;
-            const msgBuffer = new TextEncoder().encode(input);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            document.getElementById('hash-output').innerText = hashHex;
+            const outputDiv = document.getElementById('hash-output');
+
+            // Default empty hash state
+            if (input === "") {
+                outputDiv.style.color = "var(--accent-green)";
+                outputDiv.innerText = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+                return;
+            }
+
+            try {
+                // The browser's native crypto engine (Requires HTTPS to function)
+                const msgBuffer = new TextEncoder().encode(input);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                
+                outputDiv.style.color = "var(--accent-green)";
+                outputDiv.innerText = hashHex;
+            } catch (error) {
+                // If you run this offline via file:///, this warning triggers
+                outputDiv.style.color = "var(--accent-red)";
+                outputDiv.innerText = "[SECURITY BLOCK] Native cryptography is disabled by the browser for local offline files. Please run this on the live HTTPS GitHub link!";
+            }
         }
         document.getElementById('hash-input').addEventListener('input', calculateHash);
-
         // --- 2. PASSWORD ENTROPY MATH ---
         document.getElementById('pwd-input').addEventListener('input', function() {
             const pwd = this.value;
