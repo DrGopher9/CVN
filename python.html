@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Coding Lab</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .ide-container {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .ide-header {
+            background-color: #161b22;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #30363d;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #8b949e;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .ide-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .ide-body { flex-direction: row; }
+        }
+
+        .editor-pane, .console-pane {
+            flex: 1;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        .editor-pane {
+            border-right: 1px solid #30363d;
+        }
+
+        textarea.code-editor {
+            width: 100%;
+            height: 300px;
+            background-color: transparent;
+            color: #c9d1d9;
+            border: none;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+            line-height: 1.5;
+        }
+
+        .console-pane {
+            background-color: #010409;
+            color: #8b949e;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .console-output {
+            margin-bottom: 0.5rem;
+            white-space: pre-wrap;
+        }
+
+        .py-keyword { color: #ff7b72; }
+        .py-string { color: #a5d6ff; }
+        .py-comment { color: #8b949e; }
+        .py-func { color: #d2a8ff; }
+    </style>
+</head>
+<body>
+
+    <nav style="flex-wrap: wrap;">
+        <a href="index.html">[HOME]</a>
+        <a href="about.html">[ABOUT CVN]</a>
+        <a href="careers.html">[CAREERS]</a>
+        <a href="cyber.html">[CYBERSECURITY]</a>
+        <a href="network.html">[NETWORKING]</a>
+        <a href="virt.html">[VIRTUALIZATION]</a>
+        <a href="python.html" style="color: var(--accent-green);">[PYTHON LAB]</a>
+    </nav>
+
+    <header>
+        <h1>Module 4: Python Scripting</h1>
+        <p>Python is the language of hackers, network engineers, and automated defense systems. Time to write some code.</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Mini-Lab: Fix the Cyber Defender Game</h2>
+            <p>We use Python to automate our defenses during CCDC events. Below is a script for a text-based security game, but the logic is flawed. The firewall isn't deploying!</p>
+            <p><strong>Your Mission:</strong> Read the Python code in the editor. Find the variable that is currently set to <code>False</code> and change it to <code>True</code> so the ATCC Esports Server survives the attack. Then click Run.</p>
+
+            <div class="ide-container">
+                <div class="ide-header">
+                    <span>defender_script.py</span>
+                    <button class="btn-primary" onclick="runPythonSim()" style="padding: 0.2rem 1rem; font-size: 0.8rem;">▶ RUN SCRIPT</button>
+                </div>
+                <div class="ide-body">
+                    <div class="editor-pane">
+<textarea id="code-input" class="code-editor" spellcheck="false">
+# MINNEWASKA / ATCC CYBER DEFENSE LAB
+server_name = "ATCC_Esports_Main"
+incoming_attack = True
+
+# --- DEFENSE SYSTEMS ---
+# BUG LOCATED: Why is the firewall offline?
+firewall_active = False 
+
+print("Initializing network scan...")
+
+if incoming_attack == True:
+    print("⚠ WARNING: DDoS attack detected!")
+    
+    if firewall_active == True:
+        print(">> Firewall deployed.")
+        print(">> " + server_name + " is SECURE.")
+        print(">> You win!")
+    else:
+        print(">> Firewall failed to deploy.")
+        print(">> CRITICAL BREACH: Server crashed.")
+        print(">> Game Over.")
+</textarea>
+                    </div>
+                    <div class="console-pane" id="console-output">
+                        > Terminal ready. Waiting for execution...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Created for the high school visit | Alexandria Technical and Community College</p>
+    </footer>
+
+    <script>
+        function runPythonSim() {
+            const code = document.getElementById('code-input').value;
+            const consoleOut = document.getElementById('console-output');
+            
+            consoleOut.innerHTML = "<div style='color: white;'>> python3 defender_script.py</div><br>";
+
+            setTimeout(() => {
+                consoleOut.innerHTML += "Initializing network scan...<br>";
+                
+                setTimeout(() => {
+                    consoleOut.innerHTML += "<span style='color: #d29922;'>⚠ WARNING: DDoS attack detected!</span><br>";
+                    
+                    setTimeout(() => {
+                        // Check if they fixed the code by looking for firewall_active = True
+                        // Removing spaces to make the check robust against formatting differences
+                        const cleanCode = code.replace(/\s+/g, ''); 
+                        
+                        if (cleanCode.includes("firewall_active=True")) {
+                            consoleOut.innerHTML += "<span style='color: var(--accent-green);'>>> Firewall deployed.</span><br>";
+                            consoleOut.innerHTML += "<span style='color: var(--accent-green);'>>> ATCC_Esports_Main is SECURE.</span><br>";
+                            consoleOut.innerHTML += "<span style='color: var(--accent-blue); font-weight: bold;'>>> You win! Mission Accomplished.</span><br>";
+                        } else {
+                            consoleOut.innerHTML += "<span style='color: var(--accent-red);'>>> Firewall failed to deploy.</span><br>";
+                            consoleOut.innerHTML += "<span style='color: var(--accent-red);'>>> CRITICAL BREACH: Server crashed.</span><br>";
+                            consoleOut.innerHTML += "<span style='color: #8b949e;'>>> Game Over. Try changing the code and run again.</span><br>";
+                        }
+                    }, 600);
+                }, 400);
+            }, 300);
+        }
+    </script>
+</body>
+</html>
