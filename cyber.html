@@ -3,42 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cybersecurity Module</title>
+    <title>Advanced Cybersecurity</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Specific styles for the new cyber activities */
-        .meter-container {
-            width: 100%;
-            height: 20px;
+        .terminal-box {
             background-color: #010409;
             border: 1px solid #30363d;
             border-radius: 4px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-        
-        #password-meter {
-            height: 100%;
-            width: 0%;
-            background-color: var(--accent-red);
-            transition: width 0.3s, background-color 0.3s;
-        }
-
-        .fake-login {
-            background-color: #010409;
-            border: 1px dashed #30363d;
-            padding: 2rem;
-            border-radius: 4px;
-            text-align: center;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        #sql-result {
+            padding: 1.5rem;
             margin-top: 1rem;
-            font-weight: bold;
-            min-height: 24px;
+            font-family: 'Fira Code', monospace;
         }
+
+        .hash-output {
+            color: var(--accent-green);
+            word-break: break-all;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: #161b22;
+            padding: 1rem;
+            border: 1px dashed #30363d;
+            border-radius: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+
+        .sql-query-preview {
+            color: #8b949e;
+            background: #000;
+            padding: 1rem;
+            border-left: 4px solid var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        .sql-keyword { color: #ff7b72; }
+        .sql-string { color: #a5d6ff; }
+
+        .data-dump {
+            display: none;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .data-dump th, .data-dump td {
+            border: 1px solid #30363d;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .data-dump th { background-color: #21262d; color: var(--accent-green); }
+        .warning-text { color: var(--accent-red); font-size: 0.85rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -53,54 +83,70 @@
     </nav>
 
     <header>
-        <h1>Module 1: Cybersecurity</h1>
-        <p>In competitions like CCDC, securing the perimeter is only half the battle. You have to understand how attackers think, how they break cryptography, and how they exploit bad code.</p>
+        <h1>Module 1: Offensive & Defensive Cyber</h1>
+        <p>Securing the perimeter means understanding the attack vectors. Get hands-on with live encryption, entropy analysis, and database exploitation.</p>
     </header>
 
     <div class="container">
         
         <div class="card">
-            <h2>1. Cryptography: The Caesar Cipher</h2>
-            <p>If an attacker intercepts your network traffic, encryption ensures all they see is garbage data. <strong>Your Challenge:</strong> An allied CCDC team sent you a distress signal, but it's encrypted. Slide the key to find the readable message.</p>
+            <h2>1. The Hash Avalanche (SHA-256)</h2>
+            <p>Modern passwords aren't saved as text; they are "hashed." A cryptographic hash is a one-way mathematical function. <strong>Challenge:</strong> Type a word below. Note the output. Then, change just ONE letter and watch how the entire 64-character signature radically transforms.</p>
             
-            <label for="cipher-input">Intercepted Network Packet:</label>
-            <textarea id="cipher-input" rows="2">Zobmywo dy Dro Ohzybdc Dokuwyeb!</textarea>
-            
-            <label for="shift-slider">Decryption Key (Shift Value): <span id="shift-value" style="color: var(--accent-green); font-weight: bold;">0</span></label>
-            <input type="range" id="shift-slider" min="0" max="25" value="0">
-            
-            <label for="cipher-output">Decrypted Output:</label>
-            <textarea id="cipher-output" rows="2" readonly></textarea>
+            <input type="text" id="hash-input" placeholder="Type data to hash..." autocomplete="off">
+            <div class="terminal-box">
+                <div style="color: #8b949e; font-size: 0.8rem; margin-bottom: 5px;">SHA-256 OUTPUT:</div>
+                <div id="hash-output" class="hash-output">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</div>
+            </div>
         </div>
 
         <div class="card">
-            <h2>2. Password Auditing: Brute Force</h2>
-            <p>Hackers don't usually guess passwords; they use automated tools that can try millions of combinations per second. <strong>Your Challenge:</strong> Type a password below to see how long it would take a standard cracking rig to break it.</p>
+            <h2>2. Offline Cracking Rig Simulator</h2>
+            <p>Attackers use massive GPU clusters to crack hashes offline. Assuming a rig pushing <strong>100 Billion guesses per second</strong>, how strong is your password? This tool calculates raw informational entropy.</p>
             
-            <input type="text" id="password-input" placeholder="Enter a test password..." oninput="checkPasswordStrength()">
+            <input type="text" id="pwd-input" placeholder="Test a password..." autocomplete="off">
             
-            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
-                <span>Estimated Time to Crack:</span>
-                <span id="crack-time" style="font-family: 'Fira Code', monospace; font-weight: bold; color: var(--accent-red);">Instantly</span>
+            <div id="pwd-warnings" class="warning-text"></div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div style="font-size: 0.8rem; color: #8b949e;">ENTROPY (BITS)</div>
+                    <div id="entropy-val" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 0.8rem; color: #8b949e;">EST. CRACK TIME</div>
+                    <div id="time-val" class="stat-value" style="color: var(--accent-red);">Instantly</div>
+                </div>
             </div>
-            
-            <div class="meter-container">
-                <div id="password-meter"></div>
-            </div>
-            <p style="font-size: 0.8rem; color: #8b949e; margin-top: 10px;">Pro Tip: Try adding a symbol, a number, or just making it really long (like a phrase).</p>
         </div>
 
         <div class="card">
-            <h2>3. Web Exploitation: SQL Injection</h2>
-            <p>Sometimes the vulnerability isn't the password, but the website itself. Poorly written code can allow attackers to inject database commands directly into a login box. <strong>Your Challenge:</strong> Bypass this administrative login without knowing the password. Try entering this exact string as the username: <code style="color: var(--accent-green);">' OR 1=1 --</code></p>
+            <h2>3. Blind SQL Injection</h2>
+            <p>If a website doesn't sanitize your input, you can write database commands directly into the login box. <strong>Challenge:</strong> Look at the live SQL query below. How can you trick the database into evaluating the password check as <code>TRUE</code> without knowing it? <em>Hint: Try ending your username with <code>' OR '1'='1</code></em></p>
             
-            <div class="fake-login">
-                <h3 style="margin-top: 0;">Admin Portal</h3>
-                <input type="text" id="sql-user" placeholder="Username">
-                <input type="password" id="sql-pass" placeholder="Password (Optional)">
-                <button class="btn-primary" onclick="attemptSQLi()" style="width: 100%;">Login</button>
-                <div id="sql-result"></div>
+            <div class="sql-query-preview" id="sql-query">
+                <span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> users <span class="sql-keyword">WHERE</span> username = <span class="sql-string">''</span> <span class="sql-keyword">AND</span> password = <span class="sql-string">''</span>
             </div>
+
+            <input type="text" id="sql-user" placeholder="Username" autocomplete="off">
+            <input type="password" id="sql-pass" placeholder="Password (Optional)" autocomplete="off">
+            <button class="btn-primary" onclick="executeSQL()" style="width: 100%;">Execute Query</button>
+
+            <table class="data-dump" id="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Credit Card</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>01</td><td>admin_root</td><td>SuperAdmin</td><td>4111-XXXX-XXXX-1111</td></tr>
+                    <tr><td>02</td><td>j.smith</td><td>User</td><td>4532-XXXX-XXXX-9921</td></tr>
+                    <tr><td>03</td><td>ceo_account</td><td>Admin</td><td>5500-XXXX-XXXX-8832</td></tr>
+                </tbody>
+            </table>
         </div>
 
     </div>
@@ -110,108 +156,89 @@
     </footer>
 
     <script>
-        // --- 1. CIPHER LOGIC ---
-        const cipherInput = document.getElementById('cipher-input');
-        const cipherOutput = document.getElementById('cipher-output');
-        const shiftSlider = document.getElementById('shift-slider');
-        const shiftValueDisplay = document.getElementById('shift-value');
-
-        function applyCipher() {
-            const text = cipherInput.value;
-            let shift = parseInt(shiftSlider.value);
-            shift = (26 - shift % 26) % 26; 
-
-            let result = '';
-            for (let i = 0; i < text.length; i++) {
-                let char = text[i];
-                if (char.match(/[a-z]/i)) {
-                    let code = text.charCodeAt(i);
-                    if (code >= 65 && code <= 90) {
-                        char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
-                    } else if (code >= 97 && code <= 122) {
-                        char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
-                    }
-                }
-                result += char;
-            }
-            cipherOutput.value = result;
+        // --- 1. SHA-256 HASHING ---
+        async function calculateHash() {
+            const input = document.getElementById('hash-input').value;
+            const msgBuffer = new TextEncoder().encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            document.getElementById('hash-output').innerText = hashHex;
         }
+        document.getElementById('hash-input').addEventListener('input', calculateHash);
 
-        shiftSlider.addEventListener('input', (e) => {
-            shiftValueDisplay.innerText = e.target.value;
-            applyCipher();
-        });
-        cipherInput.addEventListener('input', applyCipher);
-        applyCipher();
-
-        // --- 2. PASSWORD CRACKER LOGIC ---
-        function checkPasswordStrength() {
-            const pwd = document.getElementById('password-input').value;
-            const meter = document.getElementById('password-meter');
-            const timeText = document.getElementById('crack-time');
+        // --- 2. ADVANCED PASSWORD ENTROPY ---
+        document.getElementById('pwd-input').addEventListener('input', function() {
+            const pwd = this.value;
+            const entVal = document.getElementById('entropy-val');
+            const timeVal = document.getElementById('time-val');
+            const warnings = document.getElementById('pwd-warnings');
             
-            if (pwd.length === 0) {
-                meter.style.width = '0%';
-                timeText.innerText = "Instantly";
-                timeText.style.color = "var(--accent-red)";
+            warnings.innerHTML = "";
+
+            if (!pwd) {
+                entVal.innerText = "0";
+                timeVal.innerText = "Instantly";
+                timeVal.style.color = "var(--accent-red)";
                 return;
             }
 
-            // Simplified entropy calculation for simulation purposes
             let pool = 0;
             if (/[a-z]/.test(pwd)) pool += 26;
             if (/[A-Z]/.test(pwd)) pool += 26;
             if (/[0-9]/.test(pwd)) pool += 10;
             if (/[^A-Za-z0-9]/.test(pwd)) pool += 32;
 
-            const entropy = pwd.length * Math.log2(pool || 1);
+            let entropy = pwd.length * Math.log2(pool || 1);
             
-            let timeEstimate = "";
-            let color = "";
-            let width = 0;
-
-            if (entropy < 28) {
-                timeEstimate = "Instantly";
-                color = "var(--accent-red)";
-                width = 25;
-            } else if (entropy < 35) {
-                timeEstimate = "A few minutes";
-                color = "#d29922"; // Yellow
-                width = 50;
-            } else if (entropy < 59) {
-                timeEstimate = "A few days";
-                color = "#d29922";
-                width = 75;
-            } else if (entropy < 70) {
-                timeEstimate = "Years";
-                color = "var(--accent-green)";
-                width = 90;
-            } else {
-                timeEstimate = "Centuries";
-                color = "var(--accent-blue)";
-                width = 100;
+            // Penalties for real-world bad habits
+            const lowerPwd = pwd.toLowerCase();
+            if (lowerPwd.includes("password") || lowerPwd.includes("1234") || lowerPwd.includes("qwerty") || lowerPwd === "admin") {
+                entropy -= 20;
+                warnings.innerHTML = "⚠ VULNERABILITY DETECTED: Dictionary word or common sequence found in password.";
             }
 
-            meter.style.width = width + '%';
-            meter.style.backgroundColor = color;
-            timeText.innerText = timeEstimate;
-            timeText.style.color = color;
+            if (entropy < 0) entropy = 0;
+            entVal.innerText = Math.round(entropy);
+
+            // Time math: (2^(entropy - 1)) / 100,000,000,000 guesses per second
+            const guessesNeeded = Math.pow(2, entropy - 1);
+            const seconds = guessesNeeded / 100000000000;
+
+            if (seconds < 1) { timeVal.innerText = "Instantly"; timeVal.style.color = "var(--accent-red)"; }
+            else if (seconds < 60) { timeVal.innerText = Math.round(seconds) + " Seconds"; timeVal.style.color = "var(--accent-red)"; }
+            else if (seconds < 3600) { timeVal.innerText = Math.round(seconds/60) + " Minutes"; timeVal.style.color = "#d29922"; }
+            else if (seconds < 86400) { timeVal.innerText = Math.round(seconds/3600) + " Hours"; timeVal.style.color = "#d29922"; }
+            else if (seconds < 31536000) { timeVal.innerText = Math.round(seconds/86400) + " Days"; timeVal.style.color = "var(--accent-green)"; }
+            else if (seconds < 3153600000) { timeVal.innerText = Math.round(seconds/31536000) + " Years"; timeVal.style.color = "var(--accent-green)"; }
+            else { timeVal.innerText = "Centuries+"; timeVal.style.color = "var(--accent-blue)"; }
+        });
+
+        // --- 3. LIVE SQL INJECTION ---
+        const sqlUser = document.getElementById('sql-user');
+        const sqlPass = document.getElementById('sql-pass');
+        const queryDisplay = document.getElementById('sql-query');
+        const dataTable = document.getElementById('data-table');
+
+        function updateQueryPreview() {
+            const u = sqlUser.value;
+            const p = sqlPass.value;
+            queryDisplay.innerHTML = `<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> users <span class="sql-keyword">WHERE</span> username = <span class="sql-string">'${u}'</span> <span class="sql-keyword">AND</span> password = <span class="sql-string">'${p}'</span>`;
         }
 
-        // --- 3. SQL INJECTION LOGIC ---
-        function attemptSQLi() {
-            const user = document.getElementById('sql-user').value.trim();
-            const result = document.getElementById('sql-result');
+        sqlUser.addEventListener('input', updateQueryPreview);
+        sqlPass.addEventListener('input', updateQueryPreview);
 
-            // Checking for standard basic SQLi payload
-            if (user === "' OR 1=1 --" || user === "' OR '1'='1") {
-                result.style.color = "var(--accent-green)";
-                result.innerText = "ACCESS GRANTED. Database authentication bypassed!";
-            } else if (user === "") {
-                result.innerText = "";
+        function executeSQL() {
+            const u = sqlUser.value;
+            // Common logical bypasses
+            if (u.includes("' OR '1'='1") || u.includes("' OR 1=1") || u.includes("admin' --") || u.includes("' OR ''='")) {
+                queryDisplay.style.borderLeft = "4px solid var(--accent-green)";
+                dataTable.style.display = "table";
             } else {
-                result.style.color = "var(--accent-red)";
-                result.innerText = "ACCESS DENIED. Invalid credentials.";
+                queryDisplay.style.borderLeft = "4px solid var(--accent-red)";
+                dataTable.style.display = "none";
+                alert("ACCESS DENIED: Database returned 0 rows.");
             }
         }
     </script>
