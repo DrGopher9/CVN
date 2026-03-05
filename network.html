@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Networking Module</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .network-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .node {
+            background-color: #010409;
+            border: 1px solid #30363d;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .node:hover {
+            border-color: var(--accent-blue);
+            background-color: rgba(88, 166, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        #route-result {
+            font-family: 'Fira Code', monospace;
+            text-align: center;
+            font-weight: bold;
+            min-height: 48px;
+            padding: 1rem;
+            background-color: #010409;
+            border-radius: 4px;
+            border: 1px dashed #30363d;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">[HOME]</a>
+        <a href="cyber.html">[CYBERSECURITY]</a>
+        <a href="network.html" style="color: var(--accent-green);">[NETWORKING]</a>
+        <a href="virt.html">[VIRTUALIZATION]</a>
+    </nav>
+
+    <header>
+        <h1>Module 2: Networking</h1>
+        <p>Whether it's ensuring zero-lag connections for an esports tournament or configuring enterprise Cisco routers, network engineers build the highways of the internet.</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Packet Routing Protocol</h2>
+            <p>You are acting as a core layer switch. A massive data packet needs to reach the main server. Networks are dynamic and hardware fails. <strong>Your Challenge:</strong> Select the optimal path to route the traffic without dropping the connection.</p>
+            
+            <div class="network-grid">
+                <div class="node" onclick="checkRoute('A')">
+                    <strong style="color: var(--accent-blue);">Gigabit Interface 0/1</strong><br><br><small>Route: Main Campus</small><br><small>Status: Heavy Congestion</small>
+                </div>
+                <div class="node" onclick="checkRoute('B')">
+                    <strong style="color: var(--accent-green);">TenGigabit Interface 0/2</strong><br><br><small>Route: Fiber Backbone</small><br><small>Status: Optimal</small>
+                </div>
+                <div class="node" onclick="checkRoute('C')">
+                    <strong style="color: var(--accent-red);">FastEthernet 0/0</strong><br><br><small>Route: Legacy Copper</small><br><small>Status: Protocol Down</small>
+                </div>
+            </div>
+            
+            <div id="route-result">Waiting for routing decision...</div>
+        </div>
+    </div>
+
+    <script>
+        const routeResult = document.getElementById('route-result');
+        function checkRoute(path) {
+            if (path === 'A') {
+                routeResult.style.color = '#d29922'; // Warning yellow
+                routeResult.innerText = "WARNING: Packet delivered, but latency spiked to 400ms due to congestion. Not optimal for real-time applications.";
+            } else if (path === 'B') {
+                routeResult.style.color = 'var(--accent-green)';
+                routeResult.innerText = "SUCCESS! Packet routed via high-speed fiber. Latency: 2ms. Perfect connection.";
+            } else if (path === 'C') {
+                routeResult.style.color = 'var(--accent-red)';
+                routeResult.innerText = "FATAL ERROR: Destination host unreachable. Interface is administratively down. Packets dropped.";
+            }
+        }
+    </script>
+</body>
+</html>
