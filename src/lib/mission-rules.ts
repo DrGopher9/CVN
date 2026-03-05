@@ -66,3 +66,55 @@ export function pythonBadge(attemptsAfterSubmit: number, hintsUsed: number): str
   }
   return 'Code Defender';
 }
+
+export function phishingBadge(
+  attemptsAfterSubmit: number,
+  hintsUsed: number,
+  correctCount: number
+): string {
+  if (attemptsAfterSubmit === 1 && hintsUsed === 0 && correctCount === 6) {
+    return 'Inbox Guardian';
+  }
+  if (correctCount >= 5) {
+    return 'Phish Spotter';
+  }
+  return 'Awareness Rookie';
+}
+
+export function wifiBadge(
+  attemptsAfterSubmit: number,
+  hintsUsed: number,
+  hardeningScore: number
+): string {
+  if (attemptsAfterSubmit === 1 && hintsUsed === 0 && hardeningScore === 100) {
+    return 'Wireless Warden';
+  }
+  if (hardeningScore >= 84) {
+    return 'Access Point Defender';
+  }
+  return 'Network Hardener';
+}
+
+export function forensicsBadge(attemptsAfterSubmit: number, hintsUsed: number): string {
+  if (attemptsAfterSubmit === 1 && hintsUsed === 0) {
+    return 'Evidence Ace';
+  }
+  if (hintsUsed <= 1) {
+    return 'Incident Sleuth';
+  }
+  return 'Log Analyst';
+}
+
+export function careerBossBadge(
+  attemptsAfterSubmit: number,
+  hintsUsed: number,
+  accuracyPercent: number
+): string {
+  if (attemptsAfterSubmit === 1 && hintsUsed === 0 && accuracyPercent === 100) {
+    return 'Career Boss';
+  }
+  if (accuracyPercent >= 80) {
+    return 'Role Strategist';
+  }
+  return 'Pathway Explorer';
+}

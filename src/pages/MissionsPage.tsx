@@ -27,7 +27,7 @@ export function MissionsPage() {
       </div>
 
       <p className="section-copy">
-        Phase 2 missions are now interactive. Complete the first mission to unlock the second.
+        Complete missions in sequence to unlock advanced labs and the final career boss round.
       </p>
 
       <div className="progress-bar-wrap" aria-label="Mission completion progress">

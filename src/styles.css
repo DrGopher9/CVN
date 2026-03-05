@@ -468,6 +468,72 @@ section h2 {
   margin-bottom: 0.35rem;
 }
 
+.mini-label {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8fbde3;
+  font-weight: 700;
+}
+
+.audit-grid,
+.setting-grid,
+.timeline-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 900px) {
+  .audit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 760px) {
+  .setting-grid,
+  .timeline-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.audit-card,
+.setting-card,
+.timeline-card,
+.role-result-card {
+  border: 1px solid rgba(154, 195, 231, 0.35);
+  border-radius: 12px;
+  background: rgba(8, 24, 48, 0.8);
+  padding: 0.75rem;
+}
+
+.audit-card p,
+.setting-card p,
+.timeline-card p,
+.role-result-card p {
+  margin: 0.15rem 0 0.4rem;
+}
+
+.action-select {
+  width: 100%;
+  border: 1px solid rgba(154, 195, 231, 0.55);
+  border-radius: 10px;
+  background: rgba(5, 20, 42, 0.85);
+  color: var(--text-main);
+  padding: 0.55rem 0.6rem;
+  margin-top: 0.35rem;
+}
+
+.role-result-card {
+  margin-top: 0.9rem;
+}
+
+.role-result-card h3 {
+  margin: 0.2rem 0 0.4rem;
+  font-family: 'Chakra Petch', sans-serif;
+  color: var(--accent-lime);
+}
+
 .choice-grid {
   border: 0;
   margin: 0;

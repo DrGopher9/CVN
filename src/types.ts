@@ -1,11 +1,25 @@
-export const MISSION_IDS = ['packet-path', 'password-pulse', 'sandbox-reset', 'python-fix'] as const;
+export const MISSION_IDS = [
+  'packet-path',
+  'password-pulse',
+  'sandbox-reset',
+  'python-fix',
+  'phishing-detective',
+  'wifi-defense',
+  'forensics-timeline',
+  'career-boss'
+] as const;
 
 export type MissionId = (typeof MISSION_IDS)[number];
 
 export interface MissionDefinition {
   id: MissionId;
   title: string;
-  domain: 'Cybersecurity' | 'Networking' | 'Virtualization' | 'Automation';
+  domain:
+    | 'Cybersecurity'
+    | 'Networking'
+    | 'Virtualization'
+    | 'Automation'
+    | 'Career';
   difficulty: 'Rookie' | 'Intermediate' | 'Advanced';
   objective: string;
   rewardPoints: number;

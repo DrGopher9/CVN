@@ -18,7 +18,11 @@ export function createDefaultMissionStats(): MissionStats {
     'packet-path': defaultMissionStat(),
     'password-pulse': defaultMissionStat(),
     'sandbox-reset': defaultMissionStat(),
-    'python-fix': defaultMissionStat()
+    'python-fix': defaultMissionStat(),
+    'phishing-detective': defaultMissionStat(),
+    'wifi-defense': defaultMissionStat(),
+    'forensics-timeline': defaultMissionStat(),
+    'career-boss': defaultMissionStat()
   };
 }
 
