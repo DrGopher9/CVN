@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtualization Module</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .terminal {
+            background-color: #010409;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 1rem;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .term-line { margin: 0.2rem 0; }
+        .term-error { color: var(--accent-red); }
+        .term-success { color: var(--accent-green); }
+        .term-warning { color: #d29922; }
+
+        .btn-danger {
+            background-color: var(--accent-red);
+        }
+        .btn-danger:hover {
+            background-color: #da3633;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">[HOME]</a>
+        <a href="cyber.html">[CYBERSECURITY]</a>
+        <a href="network.html">[NETWORKING]</a>
+        <a href="virt.html" style="color: var(--accent-green);">[VIRTUALIZATION]</a>
+    </nav>
+
+    <header>
+        <h1>Module 3: Virtualization</h1>
+        <p>Virtual Machines (VMs) allow us to run multiple operating systems on a single physical server. They are essential for safely analyzing threats without destroying actual hardware.</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>The Malware Sandbox</h2>
+            <p>You have intercepted a suspicious executable file. If you run this on your main PC, it could be disastrous. <strong>Your Challenge:</strong> Execute the file inside this isolated VM sandbox to observe its behavior, then use a VM "Snapshot" to instantly reverse the damage.</p>
+            
+            <div class="terminal" id="vm-terminal">
+                <div class="term-line term-success">root@alext-sandbox:~# Hypervisor online. VM allocated.</div>
+                <div class="term-line">root@alext-sandbox:~# Snapshot 'Clean_State_01' saved.</div>
+                <div class="term-line">root@alext-sandbox:~# Ready for input...</div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn-primary" onclick="runMalware()">Execute suspicious_file.exe</button>
+                <button class="btn-primary btn-danger" onclick="revertSnapshot()">Revert to Snapshot</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('vm-terminal');
+        let isCompromised = false;
+
+        function runMalware() {
+            if (isCompromised) return;
+            isCompromised = true;
+            
+            terminal.innerHTML += `<div class="term-line term-warning">root@alext-sandbox:~# Executing suspicious_file.exe...</div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+            
+            setTimeout(() => {
+                terminal.innerHTML += `<div class="term-line term-error">FATAL ERROR: Rootkit detected in kernel memory!</div>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }, 800);
+
+            setTimeout(() => {
+                for(let i=0; i<6; i++) {
+                    setTimeout(() => {
+                        terminal.innerHTML += `<div class="term-line term-error">Encrypting boot sector [Block ${Math.floor(Math.random() * 9999)}]...</div>`;
+                        terminal.scrollTop = terminal.scrollHeight;
+                    }, i * 150);
+                }
+            }, 1500);
+
+            setTimeout(() => {
+                terminal.innerHTML += `<div class="term-line term-error" style="font-weight: bold; margin-top: 10px;">SYSTEM COMPROMISED. RANSOMWARE DEPLOYED.</div>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }, 2600);
+        }
+
+        function revertSnapshot() {
+            isCompromised = false;
+            terminal.innerHTML = `
+                <div class="term-line term-success">>>> RESTORING FROM SNAPSHOT: 'Clean_State_01'...</div>
+                <div class="term-line term-success">root@alext-sandbox:~# Memory dumped. Disk state reverted.</div>
+                <div class="term-line term-success">root@alext-sandbox:~# System completely restored.</div>
+                <div class="term-line">root@alext-sandbox:~# Ready for input...</div>
+            `;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    </script>
+</body>
+</html>
