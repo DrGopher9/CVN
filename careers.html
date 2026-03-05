@@ -5,6 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CVN Careers</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .career-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .career-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .career-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+        }
+
+        .career-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        /* Color Coding for the Roles */
+        .card-red::before { background-color: var(--accent-red); }
+        .card-card::hover { border-color: var(--accent-red); }
+        
+        .card-blue::before { background-color: var(--accent-blue); }
+        
+        .card-green::before { background-color: var(--accent-green); }
+        
+        .card-purple::before { background-color: #bc8cff; }
+
+        .salary-badge {
+            display: inline-block;
+            background: #010409;
+            border: 1px dashed #30363d;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-weight: bold;
+            color: #3fb950;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        .role-title { margin-top: 0; margin-bottom: 0.5rem; }
+        .role-subtitle { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; margin-bottom: 1rem; display: block; }
+    </style>
 </head>
 <body>
 
@@ -18,31 +79,51 @@
     </nav>
 
     <header>
-        <h1>Your Future in Tech</h1>
-        <p>Every business, hospital, bank, and gaming studio on earth relies on CVN professionals to keep their lights on.</p>
+        <h1>Choose Your Class: Your Future in Tech</h1>
+        <p>Every business, hospital, bank, and gaming studio on earth relies on IT professionals to keep their lights on. Here is what your future could look like right here in Minnesota.</p>
     </header>
 
     <div class="container">
-        <div class="card">
-            <h2>Where Does This Degree Take You?</h2>
-            <p>The tech industry is desperate for people who actually know how hardware and software communicate. Here are just a few paths you can take after graduation:</p>
+        
+        <p style="text-align: center; font-size: 1.1rem;">The tech industry is desperate for people who actually know how hardware and software communicate. With a CVN degree, you don't just get a job—you step into a high-paying, fast-paced career. Choose your path below.</p>
 
-            <div style="margin-top: 2rem; border-left: 3px solid var(--accent-blue); padding-left: 1rem; margin-bottom: 2rem;">
-                <h3 style="margin-top: 0; color: var(--accent-blue);">Cybersecurity Analyst</h3>
-                <p><strong>The Job:</strong> You are the digital bodyguard. You monitor network traffic for anomalies, investigate breaches, and hunt down vulnerabilities before attackers find them.</p>
-            </div>
-
-            <div style="border-left: 3px solid var(--accent-green); padding-left: 1rem; margin-bottom: 2rem;">
-                <h3 style="margin-top: 0; color: var(--accent-green);">Network Engineer</h3>
-                <p><strong>The Job:</strong> You build the internet. You design, implement, and maintain the complex web of routers, switches, and fiber optics that allow massive organizations to communicate globally.</p>
-            </div>
-
-            <div style="border-left: 3px solid var(--accent-red); padding-left: 1rem;">
-                <h3 style="margin-top: 0; color: var(--accent-red);">Cloud / Virtualization Administrator</h3>
-                <p><strong>The Job:</strong> You manage the invisible data centers. Companies are moving away from physical servers and into virtual environments. You control the massive hypervisors that host thousands of virtual machines at once.</p>
-            </div>
+        <div class="career-grid">
             
+            <div class="career-card card-red">
+                <h2 class="role-title" style="color: var(--accent-red);">Penetration Tester</h2>
+                <span class="role-subtitle">AKA: The Ethical Hacker / "Red Team"</span>
+                <p><strong>The Mission:</strong> You get paid to legally break into companies. Organizations hire you to hack their apps, bypass their security guards, and crack their passwords to show them where their weaknesses are before the bad guys find them.</p>
+                <div class="salary-badge">MN Avg Salary: ~$130,000/yr</div>
+            </div>
+
+            <div class="career-card card-green">
+                <h2 class="role-title" style="color: var(--accent-green);">Network Engineer</h2>
+                <span class="role-subtitle">AKA: The Infrastructure Builder</span>
+                <p><strong>The Mission:</strong> You build the internet. You are the architect behind the massive webs of fiber optics, routers, and switches. Whether you are guaranteeing zero-ping for a massive Esports tournament or keeping a hospital online, you control the traffic.</p>
+                <div class="salary-badge">MN Avg Salary: ~$110,000/yr</div>
+            </div>
+
+            <div class="career-card card-blue">
+                <h2 class="role-title" style="color: var(--accent-blue);">Cybersecurity Analyst</h2>
+                <span class="role-subtitle">AKA: The Digital Defender / "Blue Team"</span>
+                <p><strong>The Mission:</strong> You are the shield. You monitor live network traffic, hunt down malicious hackers who are actively trying to breach your systems, and lock them out. It's a high-stakes game of digital cat-and-mouse.</p>
+                <div class="salary-badge">MN Avg Salary: ~$104,000/yr</div>
+            </div>
+
+            <div class="career-card card-purple">
+                <h2 class="role-title" style="color: #bc8cff;">Cloud Administrator</h2>
+                <span class="role-subtitle">AKA: The Virtual Master</span>
+                <p><strong>The Mission:</strong> You build and manage the invisible data centers. Companies don't keep giant servers in their closets anymore; everything lives in the "Cloud." You spin up the massive virtual environments that host things like Netflix, Xbox Live, and global bank databases.</p>
+                <div class="salary-badge">MN Avg Salary: ~$115,000/yr</div>
+            </div>
+
         </div>
+        
+        <div class="card" style="margin-top: 3rem; text-align: center;">
+            <h3 style="margin-top: 0;">How Do You Get There?</h3>
+            <p>You don't need a four-year degree to start making real money in tech. At Alexandria Tech, you get hands-on with enterprise equipment on day one. You earn industry certifications while you are in school, meaning you graduate ready to immediately step into the field.</p>
+        </div>
+
     </div>
 
     <footer>
