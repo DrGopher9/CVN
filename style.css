@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;700&display=swap');
+
+:root {
+    --bg-color: #0d1117;
+    --panel-bg: #161b22;
+    --text-main: #c9d1d9;
+    --accent-green: #3fb950;
+    --accent-blue: #58a6ff;
+    --accent-red: #f85149;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: 'Fira Code', monospace;
+    color: var(--accent-green);
+}
+
+/* Navigation Bar */
+nav {
+    background-color: #010409;
+    padding: 1rem;
+    border-bottom: 1px solid #30363d;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+nav a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-family: 'Fira Code', monospace;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+nav a:hover {
+    background-color: rgba(88, 166, 255, 0.1);
+    color: var(--accent-blue);
+}
+
+header {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(180deg, rgba(22,27,34,1) 0%, rgba(13,17,23,1) 100%);
+    border-bottom: 1px solid #30363d;
+}
+
+header p {
+    max-width: 600px;
+    margin: 0 auto;
+    color: #8b949e;
+    font-size: 1.1rem;
+}
+
+.container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.card {
+    background-color: var(--panel-bg);
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+/* Form Elements */
+input[type="text"], textarea {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #010409;
+    border: 1px solid #30363d;
+    color: var(--text-main);
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+input[type="range"] {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.btn-primary {
+    display: inline-block;
+    background-color: #238636;
+    color: white;
+    text-decoration: none;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background-color: #2ea043;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid #30363d;
+    margin-top: 3rem;
+    font-size: 0.9rem;
+    color: #8b949e;
+}
