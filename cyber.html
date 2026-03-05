@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Module</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">[HOME]</a>
+        <a href="cyber.html" style="color: var(--accent-green);">[CYBERSECURITY]</a>
+        <a href="network.html">[NETWORKING]</a>
+        <a href="virt.html">[VIRTUALIZATION]</a>
+    </nav>
+
+    <header>
+        <h1>Module 1: Cybersecurity</h1>
+        <p>In collegiate competitions like CCDC (Collegiate Cyber Defense Competition), securing data in transit is the difference between winning and getting breached.</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Cryptography: The Caesar Cipher</h2>
+            <p>Before modern AES encryption, we had rotational ciphers. If an attacker intercepts your network traffic, encryption ensures all they see is garbage data. <strong>Your Challenge:</strong> An allied team sent you a distress signal, but it's encrypted. Slide the key to find the readable message.</p>
+            
+            <label for="cipher-input">Intercepted Network Packet:</label>
+            <textarea id="cipher-input" rows="3">Zobmywo dy Dro Ohzybdc Dokuwyeb!</textarea>
+            
+            <label for="shift-slider">Decryption Key (Shift Value): <span id="shift-value" style="color: var(--accent-green); font-weight: bold;">0</span></label>
+            <input type="range" id="shift-slider" min="0" max="25" value="0">
+            
+            <label for="cipher-output">Decrypted Output:</label>
+            <textarea id="cipher-output" rows="3" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const cipherInput = document.getElementById('cipher-input');
+        const cipherOutput = document.getElementById('cipher-output');
+        const shiftSlider = document.getElementById('shift-slider');
+        const shiftValueDisplay = document.getElementById('shift-value');
+
+        function applyCipher() {
+            const text = cipherInput.value;
+            let shift = parseInt(shiftSlider.value);
+            shift = (26 - shift % 26) % 26; 
+
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char.match(/[a-z]/i)) {
+                    let code = text.charCodeAt(i);
+                    if (code >= 65 && code <= 90) {
+                        char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
+                    } else if (code >= 97 && code <= 122) {
+                        char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
+                    }
+                }
+                result += char;
+            }
+            cipherOutput.value = result;
+        }
+
+        shiftSlider.addEventListener('input', (e) => {
+            shiftValueDisplay.innerText = e.target.value;
+            applyCipher();
+        });
+        cipherInput.addEventListener('input', applyCipher);
+        applyCipher();
+    </script>
+</body>
+</html>
