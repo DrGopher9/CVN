@@ -82,7 +82,7 @@ export function PathwaysPage() {
         <article className="fact-card">
           <p className="mini-label">Credential Option</p>
           <h3>Cybersecurity Specialist Diploma</h3>
-          <p>42-credit focused path for fast entry into technical roles.</p>
+          <p>30-credit focused path for fast entry into technical roles.</p>
         </article>
         <article className="fact-card">
           <p className="mini-label">Credential Option</p>
@@ -103,7 +103,7 @@ export function PathwaysPage() {
             Fast-launch pathway with practical defensive skills, system hardening, and incident
             response workflows.
           </p>
-          <span className="pathway-tag">42 credits</span>
+          <span className="pathway-tag">30 credits</span>
         </article>
 
         <article className="pathway-card">
