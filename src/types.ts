@@ -29,6 +29,22 @@ export interface MissionDefinition {
   isLive: boolean;
 }
 
+export type DebriefCtaTarget = 'next-mission' | 'pathways' | 'visit';
+
+export interface DebriefCta {
+  label: string;
+  target: DebriefCtaTarget;
+}
+
+export interface DebriefContent {
+  summary: string;
+  itFieldMapping: string;
+  roles: string[];
+  cvnpConnection: string;
+  primaryCta: DebriefCta;
+  secondaryCta: DebriefCta;
+}
+
 export interface MissionStat {
   attempts: number;
   hintsUsed: number;
