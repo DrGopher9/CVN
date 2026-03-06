@@ -87,14 +87,16 @@ export function MissionDebrief({
   return (
     <div
       className="debrief-backdrop"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="debrief-title"
       onClick={(e) => {
         if (e.target === e.currentTarget) handleDismiss();
       }}
     >
-      <div className="debrief-panel">
+      <div
+        className="debrief-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="debrief-title"
+      >
         <div className="debrief-classification">CLASSIFICATION: CLEARED</div>
 
         <div className="debrief-header">
