@@ -8,6 +8,8 @@ import {
   phishingBadge
 } from '../lib/mission-rules';
 import { useProgress } from '../state/progress-context';
+import { MissionDebrief } from '../components/MissionDebrief';
+import { debriefContent } from '../content/debrief-content';
 
 type EmailAction = '' | 'allow' | 'quarantine' | 'report';
 
@@ -77,6 +79,9 @@ export function PhishingMissionPage() {
   const [actions, setActions] = useState<Record<string, EmailAction>>({});
   const [message, setMessage] = useState('Classify each email: allow, quarantine, or report.');
   const [success, setSuccess] = useState(false);
+  const [showDebrief, setShowDebrief] = useState(false);
+  const [debriefScore, setDebriefScore] = useState(0);
+  const [debriefBadge, setDebriefBadge] = useState('');
 
   const unlocked = mission
     ? isMissionUnlocked(mission, progress.completedMissionIds)
@@ -140,6 +145,9 @@ export function PhishingMissionPage() {
       completeMission(missionDef.id, score, badge);
       setMessage(`Great triage: ${correctCount}/6 correct. Score +${score}. Badge unlocked: ${badge}.`);
       setSuccess(true);
+      setDebriefScore(score);
+      setDebriefBadge(badge);
+      setShowDebrief(true);
       return;
     }
 
@@ -218,6 +226,18 @@ export function PhishingMissionPage() {
         Attempts: {progress.missionStats[missionDef.id].attempts} | Hints used:{' '}
         {progress.missionStats[missionDef.id].hintsUsed}
       </p>
+
+      {showDebrief ? (
+        <MissionDebrief
+          missionId={missionDef.id}
+          debrief={debriefContent[missionDef.id]}
+          score={debriefScore}
+          badge={debriefBadge}
+          nextMissionRoute="/missions/wifi-defense"
+          sessionId={progress.sessionId}
+          onClose={() => setShowDebrief(false)}
+        />
+      ) : null}
     </section>
   );
 }
