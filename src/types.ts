@@ -6,6 +6,7 @@ export const MISSION_IDS = [
   'phishing-detective',
   'wifi-defense',
   'forensics-timeline',
+  'python-log-parser',
   'career-boss'
 ] as const;
 
