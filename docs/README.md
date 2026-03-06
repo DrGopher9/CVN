@@ -7,3 +7,4 @@
 - `research-notes.md`: source-backed facts with links and validation notes.
 - `build-roadmap.md`: phase-based delivery plan from alignment to launch.
 - `decisions.md`: confirmed project choices that should drive implementation.
+- `mission-debrief-upgrade-plan.md`: implementation plan for post-mission IT/career debrief content.
