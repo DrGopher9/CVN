@@ -8,6 +8,8 @@ import {
   snifferBadge
 } from '../lib/mission-rules';
 import { useProgress } from '../state/progress-context';
+import { MissionDebrief } from '../components/MissionDebrief';
+import { debriefContent } from '../content/debrief-content';
 
 interface PacketLine {
   id: number;
@@ -53,6 +55,9 @@ export function SnifferPage() {
   const mission = useMemo(() => missions.find((item) => item.id === 'password-pulse'), []);
   const { progress, recordAttempt, recordHintUsed, completeMission } = useProgress();
 
+  const [showDebrief, setShowDebrief] = useState(false);
+  const [debriefScore, setDebriefScore] = useState(0);
+  const [debriefBadge, setDebriefBadge] = useState('');
   const [packets, setPackets] = useState<PacketLine[]>([]);
   const [isPaused, setIsPaused] = useState(false);
   const [answer, setAnswer] = useState('');
@@ -139,6 +144,9 @@ export function SnifferPage() {
       );
       const badge = snifferBadge(attemptsAfterSubmit, stats.hintsUsed);
       completeMission(missionDef.id, score, badge);
+      setDebriefScore(score);
+      setDebriefBadge(badge);
+      setShowDebrief(true);
       setMessage(`Credentials confirmed. Score +${score}. Badge unlocked: ${badge}.`);
       setSuccess(true);
       setIsPaused(true);
@@ -227,6 +235,17 @@ export function SnifferPage() {
         Attempts: {progress.missionStats[missionDef.id].attempts} | Hints used:{' '}
         {progress.missionStats[missionDef.id].hintsUsed}
       </p>
+      {showDebrief ? (
+        <MissionDebrief
+          missionId={missionDef.id}
+          debrief={debriefContent[missionDef.id]}
+          score={debriefScore}
+          badge={debriefBadge}
+          nextMissionRoute="/missions/sandbox-reset"
+          sessionId={progress.sessionId}
+          onClose={() => setShowDebrief(false)}
+        />
+      ) : null}
     </section>
   );
 }
