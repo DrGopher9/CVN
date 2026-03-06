@@ -85,6 +85,18 @@ export const debriefContent: Record<MissionId, DebriefContent> = {
     secondaryCta: { label: 'Explore Pathways', target: 'pathways' }
   },
 
+  'python-log-parser': {
+    summary:
+      'You diagnosed and fixed four independent bugs in a live threat detection script — wrong threshold, bad string parsing, a logic operator edge case, and a missing function call. Every one of those bugs would have let a real attacker go unreported.',
+    itFieldMapping:
+      'Log parsing and automated threat detection are core to how SOC teams scale. No one reads 100,000 log lines manually — scripts do it. When those scripts have bugs, threats slip through. Security engineers who can read, debug, and fix detection tooling are among the most valuable on any team.',
+    roles: ['Security Automation Engineer', 'SOC Analyst', 'Detection Engineer', 'Junior DevSecOps'],
+    cvnpConnection:
+      'ATCC CVNP programs include Python-based security automation coursework where you build and debug real detection and response tooling — not toy scripts, but the kind of code that runs in production SOC environments.',
+    primaryCta: { label: 'Final Mission', target: 'next-mission' },
+    secondaryCta: { label: 'Explore Pathways', target: 'pathways' }
+  },
+
   'career-boss': {
     summary:
       'You matched real IT job tasks to the roles that perform them and discovered where your strengths naturally land. Understanding the career landscape means you can make a deliberate choice — not just take whatever job comes first.',
