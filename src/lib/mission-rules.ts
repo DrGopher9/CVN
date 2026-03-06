@@ -118,3 +118,13 @@ export function careerBossBadge(
   }
   return 'Pathway Explorer';
 }
+
+export function pythonLogParserBadge(attemptsAfterSubmit: number, hintsUsed: number): string {
+  if (attemptsAfterSubmit === 1 && hintsUsed === 0) {
+    return 'Threat Intel Ace';
+  }
+  if (attemptsAfterSubmit <= 2 && hintsUsed <= 1) {
+    return 'Log Analysis Pro';
+  }
+  return 'Incident Analyst';
+}
