@@ -8,6 +8,8 @@ import {
   isMissionUnlocked
 } from '../lib/mission-rules';
 import { useProgress } from '../state/progress-context';
+import { MissionDebrief } from '../components/MissionDebrief';
+import { debriefContent } from '../content/debrief-content';
 
 interface TimelineEvent {
   id: string;
@@ -56,6 +58,9 @@ export function ForensicsMissionPage() {
   const [ordering, setOrdering] = useState<Record<string, string>>({});
   const [message, setMessage] = useState('Assign the correct sequence order to each event.');
   const [success, setSuccess] = useState(false);
+  const [showDebrief, setShowDebrief] = useState(false);
+  const [debriefScore, setDebriefScore] = useState(0);
+  const [debriefBadge, setDebriefBadge] = useState('');
 
   const unlocked = mission
     ? isMissionUnlocked(mission, progress.completedMissionIds)
@@ -115,6 +120,9 @@ export function ForensicsMissionPage() {
       completeMission(missionDef.id, score, badge);
       setMessage(`Timeline reconstructed: ${correctCount}/5 correct. Score +${score}. Badge: ${badge}.`);
       setSuccess(true);
+      setDebriefScore(score);
+      setDebriefBadge(badge);
+      setShowDebrief(true);
       return;
     }
 
@@ -187,6 +195,17 @@ export function ForensicsMissionPage() {
         Attempts: {progress.missionStats[missionDef.id].attempts} | Hints used:{' '}
         {progress.missionStats[missionDef.id].hintsUsed}
       </p>
+      {showDebrief ? (
+        <MissionDebrief
+          missionId={missionDef.id}
+          debrief={debriefContent[missionDef.id]}
+          score={debriefScore}
+          badge={debriefBadge}
+          nextMissionRoute="/missions/career-boss"
+          sessionId={progress.sessionId}
+          onClose={() => setShowDebrief(false)}
+        />
+      ) : null}
     </section>
   );
 }
