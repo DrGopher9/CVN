@@ -9,6 +9,7 @@ import { PacketPathPage } from './pages/PacketPathPage';
 import { PathwaysPage } from './pages/PathwaysPage';
 import { PhishingMissionPage } from './pages/PhishingMissionPage';
 import { PythonMissionPage } from './pages/PythonMissionPage';
+import { PythonLogParserPage } from './pages/PythonLogParserPage';
 import { SandboxMissionPage } from './pages/SandboxMissionPage';
 import { SnifferPage } from './pages/SnifferPage';
 import { VisitPage } from './pages/VisitPage';
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="missions/password-pulse" element={<SnifferPage />} />
             <Route path="missions/sandbox-reset" element={<SandboxMissionPage />} />
             <Route path="missions/python-fix" element={<PythonMissionPage />} />
+            <Route path="missions/python-log-parser" element={<PythonLogParserPage />} />
             <Route path="missions/phishing-detective" element={<PhishingMissionPage />} />
             <Route path="missions/wifi-defense" element={<WifiMissionPage />} />
             <Route path="missions/forensics-timeline" element={<ForensicsMissionPage />} />
