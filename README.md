@@ -32,7 +32,7 @@ This repo includes `.github/workflows/deploy-pages.yml`.
 2. Set `Source` to `GitHub Actions`.
 3. Push to `main` to trigger deployment.
 
-The workflow sets `VITE_BASE_PATH` dynamically to `/<repo-name>/`, so assets resolve correctly for project pages.
+Build uses a relative asset base (`./`) so it works for both project pages (`/repo/`) and custom root domains.
 
 ## Primary CTA
 Campus visit URL used in app:
