@@ -8,6 +8,8 @@ import {
   wifiBadge
 } from '../lib/mission-rules';
 import { useProgress } from '../state/progress-context';
+import { MissionDebrief } from '../components/MissionDebrief';
+import { debriefContent } from '../content/debrief-content';
 
 type SettingValue = string;
 
@@ -40,6 +42,9 @@ export function WifiMissionPage() {
   });
   const [message, setMessage] = useState('Harden the access point to pass security review.');
   const [success, setSuccess] = useState(false);
+  const [showDebrief, setShowDebrief] = useState(false);
+  const [debriefScore, setDebriefScore] = useState(0);
+  const [debriefBadge, setDebriefBadge] = useState('');
 
   const unlocked = mission
     ? isMissionUnlocked(mission, progress.completedMissionIds)
@@ -92,6 +97,9 @@ export function WifiMissionPage() {
       const score = calculateMissionScore(missionDef.rewardPoints, attemptsAfterSubmit, stats.hintsUsed, 95);
       const badge = wifiBadge(attemptsAfterSubmit, stats.hintsUsed, hardeningScore);
       completeMission(missionDef.id, score, badge);
+      setDebriefScore(score);
+      setDebriefBadge(badge);
+      setShowDebrief(true);
 
       setMessage(`Access point secured at ${hardeningScore}% hardening. Score +${score}. Badge: ${badge}.`);
       setSuccess(true);
@@ -198,6 +206,17 @@ export function WifiMissionPage() {
         Attempts: {progress.missionStats[missionDef.id].attempts} | Hints used:{' '}
         {progress.missionStats[missionDef.id].hintsUsed}
       </p>
+      {showDebrief ? (
+        <MissionDebrief
+          missionId={missionDef.id}
+          debrief={debriefContent[missionDef.id]}
+          score={debriefScore}
+          badge={debriefBadge}
+          nextMissionRoute="/missions/forensics-timeline"
+          sessionId={progress.sessionId}
+          onClose={() => setShowDebrief(false)}
+        />
+      ) : null}
     </section>
   );
 }
