@@ -8,6 +8,8 @@ import {
   isMissionUnlocked
 } from '../lib/mission-rules';
 import { useProgress } from '../state/progress-context';
+import { MissionDebrief } from '../components/MissionDebrief';
+import { debriefContent } from '../content/debrief-content';
 
 type CareerRole = 'Cybersecurity Analyst' | 'Network Engineer' | 'Cloud Administrator' | 'Penetration Tester';
 
@@ -77,6 +79,9 @@ export function CareerBossMissionPage() {
   const [message, setMessage] = useState('Match each mission to the best-fit career role.');
   const [success, setSuccess] = useState(false);
   const [recommendedRole, setRecommendedRole] = useState<CareerRole | null>(null);
+  const [showDebrief, setShowDebrief] = useState(false);
+  const [debriefScore, setDebriefScore] = useState(0);
+  const [debriefBadge, setDebriefBadge] = useState('');
 
   const unlocked = mission
     ? isMissionUnlocked(mission, progress.completedMissionIds)
@@ -155,6 +160,9 @@ export function CareerBossMissionPage() {
       completeMission(missionDef.id, score, badge);
       setMessage(`Boss round clear: ${accuracyPercent}% accuracy. Score +${score}. Badge: ${badge}.`);
       setSuccess(true);
+      setDebriefScore(score);
+      setDebriefBadge(badge);
+      setShowDebrief(true);
       return;
     }
 
@@ -235,6 +243,18 @@ export function CareerBossMissionPage() {
         Attempts: {progress.missionStats[missionDef.id].attempts} | Hints used:{' '}
         {progress.missionStats[missionDef.id].hintsUsed}
       </p>
+
+      {showDebrief ? (
+        <MissionDebrief
+          missionId={missionDef.id}
+          debrief={debriefContent[missionDef.id]}
+          score={debriefScore}
+          badge={debriefBadge}
+          nextMissionRoute={null}
+          sessionId={progress.sessionId}
+          onClose={() => setShowDebrief(false)}
+        />
+      ) : null}
     </section>
   );
 }
