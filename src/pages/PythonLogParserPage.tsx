@@ -116,7 +116,9 @@ function buildConsoleOutput(
   lines.push('[CHECK 3] Detection logic...');
   lines.push(
     check3
-      ? '  >> PASS: Comparator catches all IPs at or above threshold.'
+      ? check1
+        ? '  >> PASS: Comparator catches all IPs at or above threshold.'
+        : '  >> PASS: Comparator is correct — but threshold must also be fixed to see results.'
       : '  >> FAIL: Using strict > — an IP with exactly 5 hits slips through undetected.'
   );
   lines.push('');
@@ -124,7 +126,9 @@ function buildConsoleOutput(
   lines.push('[CHECK 4] Alert dispatch...');
   lines.push(
     check4
-      ? '  >> PASS: Alerts firing correctly.'
+      ? check1
+        ? '  >> PASS: Alerts firing correctly.'
+        : '  >> PASS: Alert call is correct — but threshold must also be fixed to trigger it.'
       : '  >> FAIL: alert_admin() defined but never called. Threats go unreported.'
   );
 
