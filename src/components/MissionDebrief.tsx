@@ -25,14 +25,17 @@ export function MissionDebrief({
   const navigate = useNavigate();
   const primaryRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<Element | null>(null);
 
   const handleDismiss = useCallback(() => {
     trackEvent('mission_debrief_dismissed', { missionId, sessionId, score, badge });
+    (previousFocusRef.current as HTMLElement)?.focus?.();
     onClose();
   }, [missionId, sessionId, score, badge, onClose]);
 
   useEffect(() => {
     trackEvent('mission_debrief_viewed', { missionId, sessionId, score, badge });
+    previousFocusRef.current = document.activeElement;
     primaryRef.current?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -93,7 +96,7 @@ export function MissionDebrief({
     } else if (debrief.primaryCta.target === 'pathways') {
       navigate('/pathways');
     } else if (debrief.primaryCta.target === 'visit') {
-      window.open('https://www.alextech.edu/about-atcc/campus-visits', '_blank', 'noopener');
+      window.open('https://www.alextech.edu/about-atcc/campus-visits', '_blank', 'noopener,noreferrer');
     } else {
       navigate('/missions');
     }
@@ -111,7 +114,7 @@ export function MissionDebrief({
     if (debrief.secondaryCta.target === 'pathways') {
       navigate('/pathways');
     } else if (debrief.secondaryCta.target === 'visit') {
-      window.open('https://www.alextech.edu/about-atcc/campus-visits', '_blank', 'noopener');
+      window.open('https://www.alextech.edu/about-atcc/campus-visits', '_blank', 'noopener,noreferrer');
     } else if (debrief.secondaryCta.target === 'next-mission') {
       navigate(nextMissionRoute ?? '/missions');
     } else {

@@ -1,6 +1,6 @@
-import { DebriefContent } from '../types';
+import { DebriefContent, MissionId } from '../types';
 
-export const debriefContent: Record<string, DebriefContent> = {
+export const debriefContent: Record<MissionId, DebriefContent> = {
   'packet-path': {
     summary:
       'You analyzed three network routes under live traffic pressure and selected the one with optimal throughput and zero packet loss. That split-second decision is exactly what keeps real networks running.',
