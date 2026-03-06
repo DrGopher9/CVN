@@ -8,6 +8,8 @@ import {
   pythonBadge
 } from '../lib/mission-rules';
 import { useProgress } from '../state/progress-context';
+import { MissionDebrief } from '../components/MissionDebrief';
+import { debriefContent } from '../content/debrief-content';
 
 const starterCode = `# CVNP PYTHON DEFENSE CHALLENGE
 server_name = "ATCC_Esports_Main"
@@ -45,6 +47,9 @@ export function PythonMissionPage() {
   const [consoleLines, setConsoleLines] = useState<string[]>(['> Terminal ready. Waiting for execution...']);
   const [message, setMessage] = useState('Patch the script and run it.');
   const [success, setSuccess] = useState(false);
+  const [showDebrief, setShowDebrief] = useState(false);
+  const [debriefScore, setDebriefScore] = useState(0);
+  const [debriefBadge, setDebriefBadge] = useState('');
 
   const unlocked = mission
     ? isMissionUnlocked(mission, progress.completedMissionIds)
@@ -115,6 +120,9 @@ export function PythonMissionPage() {
     const score = calculateMissionScore(missionDef.rewardPoints, attemptsAfterSubmit, stats.hintsUsed, 80);
     const badge = pythonBadge(attemptsAfterSubmit, stats.hintsUsed);
     completeMission(missionDef.id, score, badge);
+    setDebriefScore(score);
+    setDebriefBadge(badge);
+    setShowDebrief(true);
 
     setConsoleLines([
       ...baseOutput,
@@ -194,6 +202,17 @@ export function PythonMissionPage() {
         Attempts: {progress.missionStats[missionDef.id].attempts} | Hints used:{' '}
         {progress.missionStats[missionDef.id].hintsUsed}
       </p>
+      {showDebrief ? (
+        <MissionDebrief
+          missionId={missionDef.id}
+          debrief={debriefContent[missionDef.id]}
+          score={debriefScore}
+          badge={debriefBadge}
+          nextMissionRoute="/missions/phishing-detective"
+          sessionId={progress.sessionId}
+          onClose={() => setShowDebrief(false)}
+        />
+      ) : null}
     </section>
   );
 }
