@@ -85,6 +85,18 @@ export const missions: MissionDefinition[] = [
     isLive: true
   },
   {
+    id: 'python-log-parser',
+    title: 'Threat Log Parser',
+    domain: 'Automation',
+    difficulty: 'Advanced',
+    objective: 'Fix four bugs in a firewall log analysis script so it correctly detects and reports suspicious IPs.',
+    rewardPoints: 220,
+    durationMinutes: 5,
+    route: '/missions/python-log-parser',
+    unlockRequires: ['forensics-timeline'],
+    isLive: true
+  },
+  {
     id: 'career-boss',
     title: 'Career Boss Round',
     domain: 'Career',
@@ -93,7 +105,7 @@ export const missions: MissionDefinition[] = [
     rewardPoints: 240,
     durationMinutes: 6,
     route: '/missions/career-boss',
-    unlockRequires: ['forensics-timeline'],
+    unlockRequires: ['python-log-parser'],
     isLive: true
   }
 ];
