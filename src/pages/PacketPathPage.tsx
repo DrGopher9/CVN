@@ -1,6 +1,8 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { missions } from '../content/missions';
+import { MissionDebrief } from '../components/MissionDebrief';
+import { debriefContent } from '../content/debrief-content';
 import { trackEvent } from '../lib/analytics';
 import {
   calculateMissionScore,
@@ -38,6 +40,9 @@ export function PacketPathPage() {
   const [feedback, setFeedback] = useState<string>('');
   const [didSucceed, setDidSucceed] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
+  const [showDebrief, setShowDebrief] = useState(false);
+  const [debriefScore, setDebriefScore] = useState(0);
+  const [debriefBadge, setDebriefBadge] = useState('');
   const unlocked = mission
     ? isMissionUnlocked(mission, progress.completedMissionIds)
     : false;
@@ -99,6 +104,9 @@ export function PacketPathPage() {
         `Mission clear. Latency held at 2ms. Score +${score}. Badge unlocked: ${badge}.`
       );
       setDidSucceed(true);
+      setDebriefScore(score);
+      setDebriefBadge(badge);
+      setShowDebrief(true);
       return;
     }
 
@@ -174,6 +182,17 @@ export function PacketPathPage() {
         Attempts: {progress.missionStats[missionDef.id].attempts} | Hints used:{' '}
         {progress.missionStats[missionDef.id].hintsUsed}
       </p>
+      {showDebrief ? (
+        <MissionDebrief
+          missionId={missionDef.id}
+          debrief={debriefContent[missionDef.id]}
+          score={debriefScore}
+          badge={debriefBadge}
+          nextMissionRoute="/missions/password-pulse"
+          sessionId={progress.sessionId}
+          onClose={() => setShowDebrief(false)}
+        />
+      ) : null}
     </section>
   );
 }
