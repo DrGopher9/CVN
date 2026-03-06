@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../lib/analytics';
 import { DebriefContent, MissionId } from '../types';
@@ -24,6 +24,12 @@ export function MissionDebrief({
 }: MissionDebriefProps) {
   const navigate = useNavigate();
   const primaryRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const handleDismiss = useCallback(() => {
+    trackEvent('mission_debrief_dismissed', { missionId, sessionId, score, badge });
+    onClose();
+  }, [missionId, sessionId, score, badge, onClose]);
 
   useEffect(() => {
     trackEvent('mission_debrief_viewed', { missionId, sessionId, score, badge });
@@ -37,12 +43,41 @@ export function MissionDebrief({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [handleDismiss, missionId, sessionId, score, badge]);
 
-  function handleDismiss() {
-    trackEvent('mission_debrief_dismissed', { missionId, sessionId, score, badge });
-    onClose();
-  }
+  // Focus trap
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    function handleTab(event: KeyboardEvent) {
+      if (event.key !== 'Tab') return;
+
+      const focusable = panel!.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const focusableList = Array.from(focusable);
+      if (focusableList.length === 0) return;
+
+      const first = focusableList[0];
+      const last = focusableList[focusableList.length - 1];
+
+      if (event.shiftKey) {
+        if (document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    panel.addEventListener('keydown', handleTab);
+    return () => panel.removeEventListener('keydown', handleTab);
+  }, []);
 
   function handlePrimaryCta() {
     trackEvent('mission_debrief_cta_clicked', {
@@ -53,8 +88,8 @@ export function MissionDebrief({
       ctaTarget: debrief.primaryCta.target
     });
 
-    if (debrief.primaryCta.target === 'next-mission' && nextMissionRoute) {
-      navigate(nextMissionRoute);
+    if (debrief.primaryCta.target === 'next-mission') {
+      navigate(nextMissionRoute ?? '/missions');
     } else if (debrief.primaryCta.target === 'pathways') {
       navigate('/pathways');
     } else if (debrief.primaryCta.target === 'visit') {
@@ -77,8 +112,8 @@ export function MissionDebrief({
       navigate('/pathways');
     } else if (debrief.secondaryCta.target === 'visit') {
       window.open('https://www.alextech.edu/about-atcc/campus-visits', '_blank', 'noopener');
-    } else if (debrief.secondaryCta.target === 'next-mission' && nextMissionRoute) {
-      navigate(nextMissionRoute);
+    } else if (debrief.secondaryCta.target === 'next-mission') {
+      navigate(nextMissionRoute ?? '/missions');
     } else {
       navigate('/missions');
     }
@@ -92,6 +127,7 @@ export function MissionDebrief({
       }}
     >
       <div
+        ref={panelRef}
         className="debrief-panel"
         role="dialog"
         aria-modal="true"
@@ -159,7 +195,6 @@ export function MissionDebrief({
           <button
             className="debrief-dismiss"
             onClick={handleDismiss}
-            aria-label="Close debrief"
           >
             Skip
           </button>
