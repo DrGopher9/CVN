@@ -403,6 +403,122 @@ section h2 {
   letter-spacing: 0.07em;
 }
 
+.pathways-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.pathways-hero {
+  border: 1px solid rgba(154, 195, 231, 0.3);
+  border-radius: 16px;
+  background: linear-gradient(165deg, rgba(16, 38, 70, 0.94), rgba(8, 27, 54, 0.88));
+  padding: 1rem;
+}
+
+.fact-strip {
+  display: grid;
+  gap: 0.7rem;
+}
+
+@media (min-width: 840px) {
+  .fact-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.fact-card {
+  border: 1px solid rgba(154, 195, 231, 0.32);
+  border-radius: 12px;
+  background: rgba(8, 24, 48, 0.78);
+  padding: 0.75rem;
+}
+
+.fact-card h3 {
+  margin: 0.2rem 0 0.35rem;
+  font-size: 1.05rem;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.fact-card p {
+  margin: 0;
+}
+
+.pathway-section {
+  border: 1px solid rgba(154, 195, 231, 0.26);
+  border-radius: 14px;
+  background: rgba(9, 27, 52, 0.72);
+  padding: 0.9rem;
+}
+
+.pathway-section h3 {
+  margin: 0 0 0.55rem;
+  font-family: 'Chakra Petch', sans-serif;
+  color: var(--accent-cyan);
+}
+
+.career-track-grid,
+.competition-grid {
+  display: grid;
+  gap: 0.7rem;
+}
+
+@media (min-width: 840px) {
+  .career-track-grid,
+  .competition-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.career-track-card,
+.competition-card {
+  border: 1px solid rgba(154, 195, 231, 0.34);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: rgba(7, 21, 44, 0.78);
+}
+
+.career-track-card h4,
+.competition-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 1.02rem;
+}
+
+.career-track-card p,
+.competition-card p {
+  margin: 0.2rem 0;
+}
+
+.next-steps-list {
+  margin: 0.2rem 0 0 1rem;
+  padding: 0;
+  color: var(--text-soft);
+  display: grid;
+  gap: 0.4rem;
+}
+
+.resource-links-grid {
+  display: grid;
+  gap: 0.7rem;
+}
+
+@media (min-width: 840px) {
+  .resource-links-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.resource-link-card {
+  border: 1px solid rgba(154, 195, 231, 0.34);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: rgba(7, 21, 44, 0.78);
+}
+
+.resource-link-card h4 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
 .interactive-panel {
   margin-top: 1rem;
 }
