@@ -55,6 +55,7 @@ export function ForensicsMissionPage() {
   const mission = useMemo(() => missions.find((item) => item.id === 'forensics-timeline'), []);
   const { progress, recordAttempt, recordHintUsed, completeMission } = useProgress();
 
+  const [shuffledEvents] = useState(() => [...events].sort(() => Math.random() - 0.5));
   const [ordering, setOrdering] = useState<Record<string, string>>({});
   const [message, setMessage] = useState('Assign the correct sequence order to each event.');
   const [success, setSuccess] = useState(false);
@@ -146,7 +147,7 @@ export function ForensicsMissionPage() {
 
       <div className="interactive-panel">
         <div className="timeline-grid">
-          {events.map((item) => (
+          {shuffledEvents.map((item) => (
             <article key={item.id} className="timeline-card">
               <p>{item.label}</p>
               <label htmlFor={item.id} className="legend-text">Timeline position</label>
@@ -201,7 +202,7 @@ export function ForensicsMissionPage() {
           debrief={debriefContent[missionDef.id]}
           score={debriefScore}
           badge={debriefBadge}
-          nextMissionRoute="/missions/career-boss"
+          nextMissionRoute="/missions/python-log-parser"
           sessionId={progress.sessionId}
           onClose={() => setShowDebrief(false)}
         />
