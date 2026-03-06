@@ -22,6 +22,7 @@ export function createDefaultMissionStats(): MissionStats {
     'phishing-detective': defaultMissionStat(),
     'wifi-defense': defaultMissionStat(),
     'forensics-timeline': defaultMissionStat(),
+    'python-log-parser': defaultMissionStat(),
     'career-boss': defaultMissionStat()
   };
 }
